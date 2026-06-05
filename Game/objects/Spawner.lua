@@ -36,9 +36,11 @@ end
 
 function Spawner:draw()
     love.graphics.draw(self.sprite, self.x, self.y, 0, nil, nil, self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
-    love.graphics.setColor(1, 0, 0, 1)
-    draft:square(self.x, self.y, 30, 'fill')
-    love.graphics.setColor(1, 1, 1, 1)
+    if debug then
+        love.graphics.setColor(1, 0, 0, 1)
+        draft:square(self.x, self.y, 30, 'fill')
+        love.graphics.setColor(1, 1, 1, 1)
+    end
 end
 
 function Spawner:destroy()

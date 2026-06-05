@@ -9,7 +9,7 @@ function Play:new()
 
     self.demoFont = love.graphics.newFont(40)
 
-    self.player = self.area:addGameObject('Player', 0, 0, {})
+    self.player = self.area:addGameObject('Player', 0, 0, {hands = 1})
 
     self.spawner = self.area:addGameObject('Spawner', gw / 2, 100, {
         sprite = sprites.bowler,
@@ -37,8 +37,6 @@ function Play:draw()
     love.graphics.clear()
     camera:attach(0, 0, gw, gh)
         self.area:draw()
-        love.graphics.setFont(self.demoFont)
-        printInsideRect("Play", self.demoFont, "center")
   	camera:detach()
     love.graphics.setCanvas()
     love.graphics.setColor(1, 1, 1, 1)
