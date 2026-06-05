@@ -17,7 +17,21 @@ function Collectable:new(area, x, y, opts)
     self.collider:setObject(self)
     self.collider:setFixedRotation(false)
     self.collider:setSleepingAllowed(false)
+
+    self.consumed = false
+    self.s = 1
 end
+
+function Collectable:consume(dt)
+    self.consumed = true
+
+    self.collider:setSensor(true)
+
+    self.timer:tween(1.0, self, {s = 0}, 'in-out-cubic',
+        function() 
+            self:die()
+        end)
+end 
 
 function Collectable:applyForce(x, y)
     self.collider:applyLinearImpulse(x, y)
@@ -28,7 +42,7 @@ function Collectable:update(dt)
 end 
 
 function Collectable:draw()
-    love.graphics.draw(self.sprite, self.collider:getX(), self.collider:getY(), self.collider:getAngle(), 1, 1, self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
+    love.graphics.draw(self.sprite, self.collider:getX(), self.collider:getY(), self.collider:getAngle(), self.s, self.s, self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
     if debug then
         love.graphics.setColor(1, 0, 0, 1)
         draft:square(self.collider:getX(), self.collider:getY(), 30, 'fill')

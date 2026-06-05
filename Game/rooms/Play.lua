@@ -5,6 +5,7 @@ function Play:new()
     self.area:addPhysicsWorld()
     self.area.world:addCollisionClass('Player')
     self.area.world:addCollisionClass('Collectable')
+    self.area.world:addCollisionClass('DropWall')
     self.room_canvas = love.graphics.newCanvas(gw, gh)
 
     self.demoFont = love.graphics.newFont(40)
@@ -15,6 +16,8 @@ function Play:new()
         sprite = sprites.bowler,
         timeToSpawn = 2
     })
+
+    self.drop = self.area:addGameObject('Drop', 1640, 870, {sprite = sprites.drop, w = 501, h = 235})
 end
 
 function Play:update(dt)

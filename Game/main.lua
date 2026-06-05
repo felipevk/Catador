@@ -38,6 +38,12 @@ function love.load()
 
     sprites = {
         hand1 = love.graphics.newImage("resources/sprites/hand1.png"),
+        hand2 = love.graphics.newImage("resources/sprites/hand2.png"),
+        hand3 = love.graphics.newImage("resources/sprites/hand3.png"),
+        hand4 = love.graphics.newImage("resources/sprites/hand4.png"),
+        hand5 = love.graphics.newImage("resources/sprites/hand5.png"),
+        hand6 = love.graphics.newImage("resources/sprites/hand6.png"),
+        drop = love.graphics.newImage("resources/sprites/drop.png"),
         car1 = love.graphics.newImage("resources/sprites/car1.png"),
         bowler = love.graphics.newImage("resources/sprites/bowler.png")
     }
