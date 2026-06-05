@@ -4,7 +4,8 @@ gh = 1080
 -- do not change these directly, use the resize method instead
 sx = 1
 sy = 1
-debug = false
+debug = true
+drawCol = true
 
 
 function love.conf(t)
