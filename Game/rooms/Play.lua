@@ -3,9 +3,12 @@ local Play = Object:extend()
 function Play:new()
     self.area = Area(self)
     self.area:addPhysicsWorld()
+    self.area.world:addCollisionClass('Player')
     self.room_canvas = love.graphics.newCanvas(gw, gh)
 
     self.demoFont = love.graphics.newFont(40)
+
+    self.player = self.area:addGameObject('Player', 0, 0, {})
 end
 
 function Play:update(dt)

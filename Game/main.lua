@@ -36,6 +36,10 @@ function love.load()
 
     flash_frames = nil
 
+    sprites = {
+        hand1 = love.graphics.newImage("resources/sprites/hand1.png")
+    }
+
     input:bind('left', 'left')
     input:bind('right', 'right')
     input:bind('a', 'left')
