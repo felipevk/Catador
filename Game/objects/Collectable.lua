@@ -8,8 +8,8 @@ function Collectable:new(area, x, y, opts)
     self.play = opts.play
 
     self.collider = self.area.world:newRectangleCollider(
-        x, 
-        y, 
+        self.x - self.colW / 2, 
+        self.y - self.colH / 2, 
         self.colW, self.colH
     )
 
@@ -19,12 +19,19 @@ function Collectable:new(area, x, y, opts)
     self.collider:setSleepingAllowed(false)
 end
 
+function Collectable:applyForce(x, y)
+    self.collider:applyLinearImpulse(x, y)
+end 
+
 function Collectable:update(dt)
     Collectable.super.update(self, dt)
 end 
 
 function Collectable:draw()
-    love.graphics.draw(self.sprite, self.collider:getX(), self.collider:getY(), self.collider:getAngle(), sx, sy, self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
+    love.graphics.draw(self.sprite, self.collider:getX(), self.collider:getY(), self.collider:getAngle(), 1, 1, self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
+    love.graphics.setColor(1, 0, 0, 1)
+    draft:square(self.collider:getX(), self.collider:getY(), 30, 'fill')
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 function Collectable:die()

@@ -11,11 +11,9 @@ function Play:new()
 
     self.player = self.area:addGameObject('Player', 0, 0, {})
 
-    self.collectable = self.area:addGameObject('Collectable', gw / 2, 10, {
-        sprite = sprites.car1,
-        colW = sprites.car1:getWidth() * sx,
-        colH = sprites.car1:getHeight() * sy,
-        play = self
+    self.spawner = self.area:addGameObject('Spawner', gw / 2, 100, {
+        sprite = sprites.bowler,
+        timeToSpawn = 2
     })
 end
 

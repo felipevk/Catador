@@ -38,7 +38,8 @@ function love.load()
 
     sprites = {
         hand1 = love.graphics.newImage("resources/sprites/hand1.png"),
-        car1 = love.graphics.newImage("resources/sprites/car1.png")
+        car1 = love.graphics.newImage("resources/sprites/car1.png"),
+        bowler = love.graphics.newImage("resources/sprites/bowler.png")
     }
 
     input:bind('left', 'left')
