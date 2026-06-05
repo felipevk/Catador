@@ -4,11 +4,19 @@ function Play:new()
     self.area = Area(self)
     self.area:addPhysicsWorld()
     self.area.world:addCollisionClass('Player')
+    self.area.world:addCollisionClass('Collectable')
     self.room_canvas = love.graphics.newCanvas(gw, gh)
 
     self.demoFont = love.graphics.newFont(40)
 
     self.player = self.area:addGameObject('Player', 0, 0, {})
+
+    self.collectable = self.area:addGameObject('Collectable', gw / 2, 10, {
+        sprite = sprites.car1,
+        colW = sprites.car1:getWidth() * sx,
+        colH = sprites.car1:getHeight() * sy,
+        play = self
+    })
 end
 
 function Play:update(dt)

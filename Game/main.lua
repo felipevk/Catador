@@ -37,7 +37,8 @@ function love.load()
     flash_frames = nil
 
     sprites = {
-        hand1 = love.graphics.newImage("resources/sprites/hand1.png")
+        hand1 = love.graphics.newImage("resources/sprites/hand1.png"),
+        car1 = love.graphics.newImage("resources/sprites/car1.png")
     }
 
     input:bind('left', 'left')

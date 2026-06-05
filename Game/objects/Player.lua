@@ -10,7 +10,8 @@ function Player:new(area, x, y, opts)
 
     self.collider = self.area.world:newRectangleCollider(self.x , self.y, self.w, self.h)
     self.collider:setCollisionClass('Player')
-    self.collider:setFixedRotation(false)
+    self.collider:setFixedRotation(true)
+    self.collider:setType('kinematic')
 
     self.isClick = false
 end
