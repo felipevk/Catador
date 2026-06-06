@@ -26,6 +26,8 @@ function Drop:new(area, x, y, opts)
         self.wallColliders[i]:setFixedRotation(false)
         self.wallColliders[i]:setType('static')
     end
+
+    self.score = opts.score
 end
 
 function Drop:update(dt)
@@ -42,6 +44,7 @@ function Drop:update(dt)
         local collectable = collider:getObject()
         if not collectable.consumed then
             collectable:consume()
+            self.score:add(1)
         end
     end
 end 

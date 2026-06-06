@@ -1,0 +1,36 @@
+local Score = GameObject:extend()
+
+function Score:new(area, x, y, opts)
+    Score.super.new(self, area, x, y, opts)
+
+    self.play = opts.play
+end
+
+function Score:start(goal)
+    self.points = 0
+    self.goal = goal
+end 
+
+function Score:update(dt)
+    Score.super.update(self, dt)
+end 
+
+function Score:draw()
+    local demoFont = love.graphics.newFont(40)
+    love.graphics.setFont(demoFont)
+    printInsideRect("Score: " .. self.points, demoFont, "bottomLeft")
+end
+
+function Score:add(points)
+    self.points = self.points + points
+
+    if self.points >= self.goal then
+        self.play:finishLevel(true)
+    end
+end
+
+function Score:destroy()
+   Score.super.destroy(self)
+end
+
+return Score

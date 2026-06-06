@@ -37,7 +37,7 @@ function Area:addGameObject(game_object_type, x, y, opts)
 end
 
 function Area:getGameObjects(f)
-    return M.select(self.game_objects, f)
+    return M.select(self.game_objects, f) or {}
 end
 
 function Area:queryCircleArea(x, y, radius, targets)

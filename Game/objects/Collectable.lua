@@ -19,19 +19,29 @@ function Collectable:new(area, x, y, opts)
     self.collider:setSleepingAllowed(false)
 
     self.consumed = false
+    self.out = false
     self.s = 1
 end
 
-function Collectable:consume(dt)
+function Collectable:consume()
     self.consumed = true
 
+    self:transitionOut()
+end 
+
+
+function Collectable:transitionOut()
+    if self.out then
+        return
+    end
+    self.out = true
     self.collider:setSensor(true)
 
     self.timer:tween(1.0, self, {s = 0}, 'in-out-cubic',
         function() 
             self:die()
         end)
-end 
+end
 
 function Collectable:applyForce(x, y)
     self.collider:applyLinearImpulse(x, y)
@@ -52,7 +62,7 @@ end
 
 function Collectable:die()
     self.dead = true
- end
+end
 
 function Collectable:destroy()
    Collectable.super.destroy(self)

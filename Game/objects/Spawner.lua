@@ -7,7 +7,11 @@ function Spawner:new(area, x, y, opts)
 
     self.dir = 100
 
-    self.timer:every(opts.timeToSpawn,
+    self.out = false
+
+    self.s = 1
+
+    self.spawnRoutine = self.timer:every(opts.timeToSpawn,
             function()
                 self:spawn()
             end)
@@ -35,12 +39,30 @@ function Spawner:update(dt)
 end 
 
 function Spawner:draw()
-    love.graphics.draw(self.sprite, self.x, self.y, 0, nil, nil, self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
+    love.graphics.draw(self.sprite, self.x, self.y, 0, self.s, self.s, self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
     if debug then
         love.graphics.setColor(1, 0, 0, 1)
         draft:square(self.x, self.y, 30, 'fill')
         love.graphics.setColor(1, 1, 1, 1)
     end
+end
+
+function Spawner:transitionOut()
+    if self.out then
+        return
+    end
+    self.out = true
+
+    self.timer:cancel(self.spawnRoutine)
+
+    self.timer:tween(1.0, self, {s = 0}, 'in-out-cubic',
+        function() 
+            self:die()
+        end)
+end
+
+function Spawner:die()
+    self.dead = true
 end
 
 function Spawner:destroy()

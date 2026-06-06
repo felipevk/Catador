@@ -12,12 +12,55 @@ function Play:new()
 
     self.player = self.area:addGameObject('Player', 0, 0, {hands = 1})
 
+    self.score = self.area:addGameObject('Score', 0, 0, {play = self})
+
+    self.drop = self.area:addGameObject('Drop', 1640, 870, {sprite = sprites.drop, w = 501, h = 235, score = self.score})
+
+    self:newLevel()
+end
+
+function Play:newLevel()
+    local collectables = self.area:getGameObjects(
+        function(obj)
+            return obj.class == 'Collectable' or obj.class == 'Spawner'
+        end
+    )
+
+    if collectables ~= nil then
+        M.each(collectables, 
+            function(o, _)
+                o:die()
+            end
+        )
+    end
+
+    self.score:start(2)
+
     self.spawner = self.area:addGameObject('Spawner', gw / 2, 100, {
         sprite = sprites.bowler,
         timeToSpawn = 2
     })
 
-    self.drop = self.area:addGameObject('Drop', 1640, 870, {sprite = sprites.drop, w = 501, h = 235})
+    --TODO load level data
+end
+
+function Play:finishLevel(isWin)
+    local toLeave = self.area:getGameObjects(
+        function(obj)
+            return obj.class == 'Collectable' or obj.class == 'Spawner'
+        end
+    )
+
+    if toLeave ~= nil then
+        print(toLeave[1])
+        M.each(toLeave, 
+            function(o, _)
+                o:transitionOut()
+            end
+        )
+    end
+
+    --TODO check win condition and open shop
 end
 
 function Play:update(dt)
