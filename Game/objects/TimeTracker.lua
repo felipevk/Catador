@@ -2,13 +2,40 @@ local TimeTracker = GameObject:extend()
 
 function TimeTracker:new(area, x, y, opts)
     TimeTracker.super.new(self, area, x, y, opts)
+
+    self.counting = false
+    self.timeLeft = 0
+    self.totalTime = 0
+    self.play = opts.play
+end
+
+function TimeTracker:start(time)
+    self.counting = true
+    self.timeLeft = time
+    self.totalTime = time
+end
+
+function TimeTracker:stop()
+    self.counting = false
 end
 
 function TimeTracker:update(dt)
     TimeTracker.super.update(self, dt)
+
+    if not self.counting then return end
+
+    self.timeLeft = self.timeLeft - dt
+
+    if self.timeLeft <= 0 then
+        self.timeLeft = 0
+        self.play:finishLevel(false)
+    end
 end 
 
 function TimeTracker:draw()
+    local demoFont = love.graphics.newFont(40)
+    love.graphics.setFont(demoFont)
+    printInsideRect("Time Left: " .. math.floor(self.timeLeft), demoFont, "topRight")
 end
 
 function TimeTracker:destroy()

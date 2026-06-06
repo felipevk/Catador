@@ -2,6 +2,7 @@ local Play = Object:extend()
 
 function Play:new()
     self.area = Area(self)
+    self.timer = Timer()
     self.area:addPhysicsWorld()
     self.area.world:addCollisionClass('Player')
     self.area.world:addCollisionClass('Collectable')
@@ -10,9 +11,9 @@ function Play:new()
 
     self.demoFont = love.graphics.newFont(40)
 
-    self.player = self.area:addGameObject('Player', 0, 0, {hands = 1})
-
     self.score = self.area:addGameObject('Score', 0, 0, {play = self})
+
+    self.timeTracker = self.area:addGameObject('TimeTracker', 0, 0, {play = self})
 
     self.drop = self.area:addGameObject('Drop', 1640, 870, {sprite = sprites.drop, w = 501, h = 235, score = self.score})
 
@@ -35,11 +36,14 @@ function Play:newLevel()
     end
 
     self.score:start(2)
+    self.timeTracker:start(10)
 
     self.spawner = self.area:addGameObject('Spawner', gw / 2, 100, {
         sprite = sprites.bowler,
         timeToSpawn = 2
     })
+
+    self.player = self.area:addGameObject('Player', 0, 0, {hands = 1})
 
     --TODO load level data
 end
@@ -60,13 +64,26 @@ function Play:finishLevel(isWin)
         )
     end
 
+    self.player:destroy()
+
+    self.timeTracker:stop()
     --TODO check win condition and open shop
+
+    if isWin then
+        self.area:addGameObject('RoundCompleteEffect', 0, 0)
+        self.timer:after(1, function() self:newLevel() end)
+    else
+        self.area:addGameObject('GameOverEffect', 0, 0)
+        self.timer:after(2, function() gotoRoom("Credits") end)
+    end
 end
 
 function Play:update(dt)
     -- this keeps the camera centered after shake
     camera.smoother = Camera.smooth.damped(5)
     camera:lockPosition(dt, gw/2, gh/2)
+
+    if self.timer then self.timer:update(dt) end
     
     self.area:update(dt)
 
