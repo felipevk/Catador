@@ -17,6 +17,19 @@ function Play:new()
 
     self.drop = self.area:addGameObject('Drop', 1640, 870, {sprite = sprites.drop, w = 501, h = 235, score = self.score})
 
+    self.spawnerData = {
+        bowler = {sprite = sprites.bowler, timeToSpawn = 2}
+    }
+
+    self.levelData = {
+        {goal = 2, time = 10, spawners = {'bowler'}},
+        {goal = 3, time = 10, spawners = {'bowler', 'bowler'}},
+        {goal = 3, time = 10, spawners = {'bowler', 'bowler', 'bowler'}}
+    }
+
+    self.current_level = 0
+
+
     self:newLevel()
 end
 
@@ -35,13 +48,23 @@ function Play:newLevel()
         )
     end
 
-    self.score:start(2)
-    self.timeTracker:start(10)
+    self.current_level = self.current_level + 1
 
-    self.spawner = self.area:addGameObject('Spawner', gw / 2, 100, {
-        sprite = sprites.bowler,
-        timeToSpawn = 2
-    })
+    local current_level_data = self.levelData[self.current_level]
+
+    self.score:start(current_level_data.goal)
+    self.timeTracker:start(current_level_data.time)
+
+    M.each(current_level_data.spawners, 
+        function(spawnerKey, _)
+            local spawnerData = self.spawnerData[spawnerKey]
+            local pos = {random(200, 1400), 100}
+            self.area:addGameObject('Spawner', pos[1], pos[2], {
+                sprite = spawnerData.sprite,
+                timeToSpawn = spawnerData.timeToSpawn
+            })
+        end
+    )
 
     self.player = self.area:addGameObject('Player', 0, 0, {hands = 1})
 
@@ -56,7 +79,6 @@ function Play:finishLevel(isWin)
     )
 
     if toLeave ~= nil then
-        print(toLeave[1])
         M.each(toLeave, 
             function(o, _)
                 o:transitionOut()
@@ -70,11 +92,25 @@ function Play:finishLevel(isWin)
     --TODO check win condition and open shop
 
     if isWin then
+        -- TODO check if last level complete
         self.area:addGameObject('RoundCompleteEffect', 0, 0)
-        self.timer:after(1, function() self:newLevel() end)
+        self.timer:after(1, function() self:afterRoundComplete() end)
     else
         self.area:addGameObject('GameOverEffect', 0, 0)
         self.timer:after(2, function() gotoRoom("Credits") end)
+    end
+end
+
+function Play:isLastLevel()
+    return self.current_level == #self.levelData
+end
+
+function Play:afterRoundComplete()
+    if self:isLastLevel() then
+        self.area:addGameObject('GameFinishedEffect', 0, 0)
+        self.timer:after(2, function() gotoRoom("Credits") end)
+    else
+        self:newLevel() 
     end
 end
 
@@ -89,6 +125,10 @@ function Play:update(dt)
 
     if input:pressed('exit') then
         gotoRoom("Credits")
+    end
+
+    if input:pressed('autowin') then
+        self:finishLevel(true)
     end
 end
 

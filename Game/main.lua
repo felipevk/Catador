@@ -59,6 +59,7 @@ function love.load()
 
     input:bind('mouse1', 'click')
     input:bind('escape', 'exit')
+    input:bind('e', 'autowin')
 
     gotoRoom("Start")
 

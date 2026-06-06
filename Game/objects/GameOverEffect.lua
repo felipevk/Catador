@@ -8,15 +8,7 @@ function GameOverEffect:new(area, x, y, opts)
     self.a = 0
     self.timer = Timer()
 
-   self.timer:tween(0.5, self, {a = 1, scale = 1}, 'in-out-cubic',
-    function()
-        self.timer:after(1.5, function()
-            self.timer:tween(0.25, self, {a = 0}, 'in-out-cubic',
-            function()
-                self.dead = true
-            end)
-        end)
-    end)
+   self.timer:tween(0.5, self, {a = 1, scale = 1}, 'in-out-cubic')
 end
 
 function GameOverEffect:update(dt)
