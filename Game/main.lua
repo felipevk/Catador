@@ -48,6 +48,14 @@ function love.load()
         bowler = love.graphics.newImage("resources/sprites/bowler.png")
     }
 
+    sounds = {
+        main = love.audio.newSource("resources/audio/Guifrog - Suco de Abacaxi.mp3", "stream")
+    }
+
+    sounds.main:setLooping(true)
+    sounds.main:setVolume(0.1)
+    sounds.main:play()
+
     input:bind('left', 'left')
     input:bind('right', 'right')
     input:bind('a', 'left')
