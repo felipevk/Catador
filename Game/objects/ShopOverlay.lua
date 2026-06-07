@@ -21,7 +21,7 @@ function ShopOverlay:new(area, x, y, opts)
     -- x,y as top left
     self.buttonData = {
         x = gw / 2 - 132,
-        y = 804 - 29,
+        y = 884 - 29,
         w = 264,
         h = 58,
         text = "OK",
@@ -35,13 +35,13 @@ function ShopOverlay:new(area, x, y, opts)
             x = 380,
             y = 176,
             w = 546,
-            h = 544,
+            h = 624,
         },
         {
             x = 994,
             y = 176,
             w = 546,
-            h = 544,
+            h = 624,
         }
     }
 
@@ -61,6 +61,8 @@ function ShopOverlay:show(callback)
     self.shopIndexes = self.play:getShopOptions()
 
     self.shopCharms = {self.play.charmData[self.shopIndexes[1]], self.play.charmData[self.shopIndexes[2]]}
+
+    self.selected = 0
 end
 
 function ShopOverlay:update(dt)
@@ -169,7 +171,7 @@ function ShopOverlay:drawOption(rect, charmData, isSelected)
         rect.y + startPadding, 
         0, 
         spriteScale, spriteScale, 
-        spriteScale * sprite:getWidth() / 2, 
+        sprite:getWidth() / 2, 
         0
     )
 
@@ -177,10 +179,10 @@ function ShopOverlay:drawOption(rect, charmData, isSelected)
     love.graphics.setFont(font)
     love.graphics.setColor({0.0,0.0,0.0,1.0})
 
-    local startTextY = rect.y + sprite:getHeight() + startPadding
+    local startTextY = rect.y + (sprite:getHeight() * spriteScale) + startPadding
     for i = 1 , #charmData.descriptions do
         local text = charmData.descriptions[i]
-        local lineHeight = font:getWidth(text)
+        local lineHeight = font:getHeight()
         local textRect = {
             x = rectCenter.x - font:getWidth(text) / 2, 
             y = startTextY + i * (lineHeight + 5), 
