@@ -173,3 +173,10 @@ function printInsideRect(text, font, side, offset, rect)
 
     love.graphics.print(text, x, y, 0, 1, 1, ox, oy)
 end
+
+function getCenter(rect)
+    return {
+        x = rect.x + rect.w / 2,
+        y = rect.y + rect.h / 2
+    }
+end

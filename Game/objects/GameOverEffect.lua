@@ -8,6 +8,8 @@ function GameOverEffect:new(area, x, y, opts)
     self.a = 0
     self.timer = Timer()
 
+    self.depth = 400
+
    self.timer:tween(0.5, self, {a = 1, scale = 1}, 'in-out-cubic')
 end
 

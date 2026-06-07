@@ -6,6 +6,8 @@ function Start:new()
     self.room_canvas = love.graphics.newCanvas(gw, gh)
 
     self.demoFont = love.graphics.newFont(40)
+
+    self.area:addGameObject('TestObj', gw / 2, gh /2 , {})
 end
 
 function Start:update(dt)

@@ -42,8 +42,8 @@ end
 function Spawner:spawn()
     col = self.area:addGameObject('Collectable', self.x, self.y, {
         sprite = sprites.car1,
-        colW = sprites.car1:getWidth(),
-        colH = sprites.car1:getHeight(),
+        colW = 280,
+        colH = 184,
         play = self
     })
 

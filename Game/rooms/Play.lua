@@ -22,6 +22,8 @@ function Play:new()
 
     self.timeTracker = self.area:addGameObject('TimeTracker', 0, 0, {play = self})
 
+    self.shop = self.area:addGameObject('ShopOverlay', 0, 0, {})
+
     self.drop = nil
 
     self.spawnerData = {
@@ -142,7 +144,7 @@ function Play:afterRoundComplete()
         self.area:addGameObject('GameFinishedEffect', 0, 0)
         self.timer:after(2, function() gotoRoom("Credits") end)
     else
-        self:newLevel() 
+        self.shop:show(function() self:newLevel() end) 
     end
 end
 
