@@ -25,7 +25,7 @@ function Score:add(points)
     self.points = self.points + points
 
     if self.points >= self.goal then
-        self.play:finishLevel(true)
+        self.play:finishLevel(self.play.gameMode == GameModes.ATTACK)
     end
 end
 

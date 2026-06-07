@@ -1,9 +1,14 @@
 local Spawner = GameObject:extend()
+local unpack = _G.unpack or table.unpack
 
 function Spawner:new(area, x, y, opts)
     Spawner.super.new(self, area, x, y, opts)
 
+    self.gameMode = opts.gameMode
+
     self.sprite = opts.sprite
+
+    self.depth = opts.depth
 
     self.dir = 100
 
@@ -15,25 +20,45 @@ function Spawner:new(area, x, y, opts)
             function()
                 self:spawn()
             end)
+
+    self.spawnForces = {
+        {100000, -50000},
+        {0, 100000}
+    }
+
+    self.velocities = {
+        {100},
+        {100}
+    }
+
+    self.boundaries = {
+        {100, 850},
+        {100, 1500}
+    }
+
+    self.axis = {'y', 'x'}
 end
 
 function Spawner:spawn()
-    col = self.area:addGameObject('Collectable', self.x, self.y + 80, {
+    col = self.area:addGameObject('Collectable', self.x, self.y, {
         sprite = sprites.car1,
         colW = sprites.car1:getWidth(),
         colH = sprites.car1:getHeight(),
         play = self
     })
 
-    col:applyForce(0,100000)
+    col:applyForce(unpack(self.spawnForces[self.gameMode]))
 end
 
 function Spawner:update(dt)
     Spawner.super.update(self, dt)
 
-    self.x = self.x + self.dir * dt
+    local currAxis = self.axis[self.gameMode]
+    local min, max = unpack(self.boundaries[self.gameMode])
+    
+    self[currAxis] = self[currAxis] + self.dir * dt
 
-    if self.x > 1500 or self.x < 100 then
+    if self[currAxis] < min or self[currAxis]> max then
         self.dir = self.dir * -1
     end
 end 

@@ -28,7 +28,7 @@ function TimeTracker:update(dt)
 
     if self.timeLeft <= 0 then
         self.timeLeft = 0
-        self.play:finishLevel(false)
+        self.play:finishLevel(self.play.gameMode == GameModes.DEFENSE)
     end
 end 
 

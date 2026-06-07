@@ -11,20 +11,28 @@ function Play:new()
 
     self.demoFont = love.graphics.newFont(40)
 
+    GameModes = {
+        ATTACK = 1,
+        DEFENSE = 2
+    }
+
+    self.gameMode = 0
+
     self.score = self.area:addGameObject('Score', 0, 0, {play = self})
 
     self.timeTracker = self.area:addGameObject('TimeTracker', 0, 0, {play = self})
 
-    self.drop = self.area:addGameObject('Drop', 1640, 870, {sprite = sprites.drop, w = 501, h = 235, score = self.score})
+    self.drop = nil
 
     self.spawnerData = {
         bowler = {sprite = sprites.bowler, timeToSpawn = 2}
     }
 
     self.levelData = {
-        {goal = 2, time = 10, spawners = {'bowler'}},
-        {goal = 3, time = 10, spawners = {'bowler', 'bowler'}},
-        {goal = 3, time = 10, spawners = {'bowler', 'bowler', 'bowler'}}
+        {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler'}},
+        {mode = GameModes.DEFENSE, goal = 3, time = 10, spawners = {'bowler', 'bowler'}},
+        {mode = GameModes.ATTACK, goal = 3, time = 10, spawners = {'bowler', 'bowler', 'bowler'}},
+        {mode = GameModes.DEFENSE, goal = 3, time = 10, spawners = {'bowler', 'bowler', 'bowler'}}
     }
 
     self.current_level = 0
@@ -52,17 +60,41 @@ function Play:newLevel()
 
     local current_level_data = self.levelData[self.current_level]
 
+    self.gameMode = current_level_data.mode
+
     self.score:start(current_level_data.goal)
     self.timeTracker:start(current_level_data.time)
 
+    local dropPos = {
+        {gw / 2, 150},
+        {gw / 2, gh - 150}
+    }
+
+    local selectedPos = dropPos[self.gameMode]
+
+    if self.drop ~= nil then self.drop:die() end
+
+    self.drop = self.area:addGameObject('Drop', selectedPos[1], selectedPos[2], {gameMode = self.gameMode, sprite = sprites.drop, w = 501, h = 235, score = self.score})
+
+    local spawnerDepth = 1
     M.each(current_level_data.spawners, 
         function(spawnerKey, _)
             local spawnerData = self.spawnerData[spawnerKey]
-            local pos = {random(200, 1400), 100}
+            local pos = {}
+            if self.gameMode == GameModes.ATTACK then
+                pos = {50, random(100, 600)}
+            else
+                pos = {random(200, 1400), 100}
+            end
+            
             self.area:addGameObject('Spawner', pos[1], pos[2], {
+                gameMode = self.gameMode,
                 sprite = spawnerData.sprite,
-                timeToSpawn = spawnerData.timeToSpawn
+                timeToSpawn = spawnerData.timeToSpawn,
+                depth = spawnerDepth
             })
+
+            spawnerDepth = spawnerDepth + 1
         end
     )
 
@@ -140,6 +172,10 @@ function Play:draw()
     love.graphics.clear()
     camera:attach(0, 0, gw, gh)
         self.area:draw()
+        love.graphics.setFont(self.demoFont)
+        local modeText = "Attack"
+        if self.gameMode == GameModes.DEFENSE then modeText = "Defense" end
+        printInsideRect(modeText, self.demoFont, "bottom")
   	camera:detach()
     love.graphics.setCanvas()
     love.graphics.setColor(1, 1, 1, 1)
