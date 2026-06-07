@@ -3,9 +3,10 @@ local Collectable = GameObject:extend()
 function Collectable:new(area, x, y, opts)
     Collectable.super.new(self, area, x, y, opts)
 
+    self.modifiers = opts.modifiers
+
     self.sprite = opts.sprite
     self.colW, self.colH = opts.colW, opts.colH
-    self.play = opts.play
 
     self.collider = self.area.world:newRectangleCollider(
         self.x - self.colW / 2, 

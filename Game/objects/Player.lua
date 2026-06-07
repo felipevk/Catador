@@ -5,7 +5,7 @@ function Player:new(area, x, y, opts)
 
     self.x, self.y = x, y
 
-    self.handCount = opts.hands
+    self.handCount = opts.modifiers.hands
 
     self.handData = {
         {sprite = { asset = sprites.hand1, position = {x = 0, y = 0} }, collider={x = 0, y = 0, w = 194, h = 74}},

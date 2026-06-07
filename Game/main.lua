@@ -45,11 +45,33 @@ function love.load()
         hand6 = love.graphics.newImage("resources/sprites/hand6.png"),
         drop = love.graphics.newImage("resources/sprites/drop.png"),
         car1 = love.graphics.newImage("resources/sprites/car1.png"),
-        bowler = love.graphics.newImage("resources/sprites/bowler.png")
+        bowler = love.graphics.newImage("resources/sprites/bowler.png"),
+        charm1 = love.graphics.newImage("resources/sprites/charm1.jpg"),
+        charm2 = love.graphics.newImage("resources/sprites/charm2.jpg"),
+        charm3 = love.graphics.newImage("resources/sprites/charm3.jpg"),
+        charm4 = love.graphics.newImage("resources/sprites/charm4.jpg"),
+        charm5 = love.graphics.newImage("resources/sprites/charm5.jpg"),
+        charm6 = love.graphics.newImage("resources/sprites/charm6.jpg"),
+        charm7 = love.graphics.newImage("resources/sprites/charm7.jpg"),
+        charm8 = love.graphics.newImage("resources/sprites/charm8.jpg"),
+        charm9 = love.graphics.newImage("resources/sprites/charm9.jpg"),
+        charm10 = love.graphics.newImage("resources/sprites/charm10.jpg"),
+        charm11 = love.graphics.newImage("resources/sprites/charm11.jpg")
     }
 
     sounds = {
         main = love.audio.newSource("resources/audio/Guifrog - Suco de Abacaxi.mp3", "stream")
+    }
+
+    colors = {
+        purple = {0.4784, 0.3333, 0.9255, 1.0}, -- 7a55ec
+        red    = {0.9255, 0.3333, 0.3333, 1.0}, -- ec5555
+        pink   = {0.9255, 0.3333, 0.8118, 1.0}, -- ec55cf
+        blue   = {0.3333, 0.3961, 0.9255, 1.0}, -- 5565ec
+        cyan   = {0.3333, 0.7059, 0.9255, 1.0}, -- 55b4ec
+        green  = {0.3333, 0.9255, 0.6000, 1.0}, -- 55ec99
+        yellow = {0.8588, 0.9255, 0.3333, 1.0}, -- dbec55
+        orange = {0.9255, 0.5686, 0.3333, 1.0}, -- ec9155
     }
 
     sounds.main:setLooping(true)

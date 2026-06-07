@@ -5,6 +5,8 @@ function Drop:new(area, x, y, opts)
 
     self.gameMode = opts.gameMode
 
+    self.modifiers = opts.modifiers
+
     self.sprite = opts.sprite
     self.w,self.h = opts.w,opts.h
 
@@ -61,7 +63,7 @@ function Drop:update(dt)
         local collectable = collider:getObject()
         if not collectable.consumed then
             collectable:consume()
-            self.score:add(1)
+            self.score:add(self.modifiers.scoreMult)
         end
     end
 end 

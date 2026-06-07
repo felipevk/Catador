@@ -4,8 +4,13 @@ local unpack = _G.unpack or table.unpack
 function ShopOverlay:new(area, x, y, opts)
     ShopOverlay.super.new(self, area, x, y, opts)
 
+    self.play = opts.play
+
     self.backgroundColor = {1.0, 0.0, 0.0, 0.5}
-    self.panelColor = {0.0, 0.0, 0.8, 0.9} 
+    self.panelColor = {0.0, 0.0, 0.8, 0.9}
+    
+    self.optionColor = {0.0, 0.8, 1.0, 0.9} 
+    self.optionOutlineColor = {1.0, 0.0, 0.0, 0.9}
 
     self.w, self.h = gw * 0.75 , gh * 0.75
 
@@ -25,23 +30,37 @@ function ShopOverlay:new(area, x, y, opts)
         textColor = {0.0, 0.0, 0.0, 1.0}
     }
 
+    self.optionRect = {
+        {
+            x = 380,
+            y = 176,
+            w = 546,
+            h = 544,
+        },
+        {
+            x = 994,
+            y = 176,
+            w = 546,
+            h = 544,
+        }
+    }
+
     self.depth = 500
 
     self.isHovered = false
+
+    self.shopCharms = {}
+
+    self.selected = 0
 end
 
 function ShopOverlay:show(callback)
     self.showing = true
     self.onTransitionOut = callback
 
-    --TODO set items
-end
+    self.shopIndexes = self.play:getShopOptions()
 
-function ShopOverlay:hide()
-    self.showing = false
-
-    -- TODO move callback to end of transition
-    self.onTransitionOut()
+    self.shopCharms = {self.play.charmData[self.shopIndexes[1]], self.play.charmData[self.shopIndexes[2]]}
 end
 
 function ShopOverlay:update(dt)
@@ -51,24 +70,50 @@ function ShopOverlay:update(dt)
 
     local clicking = input:down('click') == true
 
-    self.isHovered = self:isButtonHovered()
+    self.isHovered = self:isAreaHovered(self.buttonData)
 
     if self.isHovered and clicking then
-        self:hide()
+        self:onOkPressed()
+    end
+
+    for i = 1, #self.optionRect do
+        if self:isAreaHovered(self.optionRect[i]) and clicking then
+            self:onOptionSelected(i)
+        end
     end
 
 end 
 
-function ShopOverlay:isButtonHovered()
+function ShopOverlay:onOkPressed()
+    if self.selected == 0 then return end
+
+    self.play:activateCharm(self.shopIndexes[self.selected])
+
+    self:hide()
+
+end
+
+function ShopOverlay:onOptionSelected(index)
+    self.selected = index
+end
+
+function ShopOverlay:hide()
+    self.showing = false
+
+    -- TODO move callback to end of transition
+    self.onTransitionOut()
+end
+
+function ShopOverlay:isAreaHovered(rect)
     local mx, my = love.mouse.getPosition()
 
     mx = mx / sx
     my = my / sy
 
-    return mx >= self.buttonData.x
-       and mx <= self.buttonData.x + self.buttonData.w
-       and my >= self.buttonData.y
-       and my <= self.buttonData.y + self.buttonData.h
+    return mx >= rect.x
+       and mx <= rect.x + rect.w
+       and my >= rect.y
+       and my <= rect.y + rect.h
 end
 
 function ShopOverlay:draw()
@@ -96,6 +141,55 @@ function ShopOverlay:draw()
     
     love.graphics.setColor(1, 1, 1, 1)
 
+    for i = 1, #self.optionRect do
+        self:drawOption(self.optionRect[i], self.shopCharms[i], self.selected == i)
+    end
+end
+
+function ShopOverlay:drawOption(rect, charmData, isSelected)
+    local rectCenter = getCenter(rect)
+    local startPadding = 20
+
+    love.graphics.setColor(unpack(self.optionColor))
+    draft:rectangle(rectCenter.x, rectCenter.y , rect.w, rect.h, 'fill')
+
+    if isSelected then
+        love.graphics.setColor(unpack(self.optionOutlineColor))
+        love.graphics.setLineWidth(20)
+        draft:rectangle(rectCenter.x, rectCenter.y , rect.w, rect.h, 'line')
+        love.graphics.setLineWidth(1)
+    end
+    
+    love.graphics.setColor(unpack(charmData.color))
+    local sprite = charmData.sprite
+    local spriteScale = 0.75
+    love.graphics.draw(
+        charmData.sprite, 
+        rectCenter.x, 
+        rect.y + startPadding, 
+        0, 
+        spriteScale, spriteScale, 
+        spriteScale * sprite:getWidth() / 2, 
+        0
+    )
+
+    local font = love.graphics.newFont(40)
+    love.graphics.setFont(font)
+    love.graphics.setColor({0.0,0.0,0.0,1.0})
+
+    local startTextY = rect.y + sprite:getHeight() + startPadding
+    for i = 1 , #charmData.descriptions do
+        local text = charmData.descriptions[i]
+        local lineHeight = font:getWidth(text)
+        local textRect = {
+            x = rectCenter.x - font:getWidth(text) / 2, 
+            y = startTextY + i * (lineHeight + 5), 
+            w = font:getWidth(text), 
+            h = font:getHeight()
+        }
+        --text, font, side, offset, rect
+        printInsideRect(text, font, 'center', 0, textRect)
+    end
 end
 
 function ShopOverlay:die()

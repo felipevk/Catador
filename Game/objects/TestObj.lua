@@ -1,4 +1,5 @@
 local TestObj = GameObject:extend()
+local unpack = _G.unpack or table.unpack
 
 function TestObj:new(area, x, y, opts)
     TestObj.super.new(self, area, x, y, opts)
@@ -9,8 +10,9 @@ function TestObj:update(dt)
 end 
 
 function TestObj:draw()
-    local sprite = sprites.car1
-    love.graphics.draw(sprite, self.x, self.y, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    local sprite = sprites.charm1
+    love.graphics.setColor(unpack(colors.purple))
+    love.graphics.draw(sprite, self.x, self.y, 0, 0.75, 0.75, sprite:getWidth() / 2, sprite:getHeight() / 2)
     if debug then
         love.graphics.setColor(1, 0, 0, 1)
         draft:square(self.x, self.y, 30, 'fill')

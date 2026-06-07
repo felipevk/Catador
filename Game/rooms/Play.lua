@@ -16,13 +16,65 @@ function Play:new()
         DEFENSE = 2
     }
 
+    self.modifiers = {
+        hands = 1,
+        goalScoreMult = 1, -- objective
+        additionalTime = 0,
+        scoreMult = 1, --value of each collectable
+        bouncy = false,
+        sticky = false,
+        homing = false,
+        increaseTime = false, -- every X points increase time by 1 second
+        split = false,
+    }
+
+    self.effects = {
+        nothing = function() end,
+        increaseHands = function() self.modifiers.hands = self.modifiers.hands + 1 end,
+        increaseTime = function() self.modifiers.additionalTime = self.modifiers.additionalTime + 3 end,
+        setScoreMult2 = function() self.modifiers.scoreMult = 2 end,
+        setBouncy = function() self.modifiers.bouncy = true end,
+        setSticky= function() self.modifiers.sticky = true end,
+        setHoming = function() self.modifiers.homing = true end,
+        setIncreaseTime = function() self.modifiers.increaseTime = true end,
+        setSplit = function() self.modifiers.split = true end,
+    }
+
+    self.fxDescriptions = {
+        nothing = 'Nothing',
+        addHand = '+1 hand',
+        addTime = 'Additional time',
+        scoreMult = 'Score more points',
+    }
+
+    self.charmData = {
+        {name = 'Journey', sprite = sprites.charm1, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.increaseHands}},
+        {name = 'Face', sprite = sprites.charm2, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
+        {name = 'Mill', sprite = sprites.charm3, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
+        {name = 'Bless', sprite = sprites.charm4, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
+        {name = 'Elder', sprite = sprites.charm5, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
+        {name = 'Graveyard', sprite = sprites.charm6, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
+        {name = 'Yeller', sprite = sprites.charm7, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
+        {name = 'Tree', sprite = sprites.charm8, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
+        {name = 'Gnome', sprite = sprites.charm9, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
+        {name = 'Babuska', sprite = sprites.charm10, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
+        {name = 'Queen', sprite = sprites.charm11, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}}
+    }
+
+    self.availableCharms = {}
+    for i = 1,#self.charmData do
+        self.availableCharms[i] = i
+    end
+
+    self.activeCharms = {}
+
     self.gameMode = 0
 
-    self.score = self.area:addGameObject('Score', 0, 0, {play = self})
+    self.score = self.area:addGameObject('Score', 0, 0, {play = self, modifiers = self.modifiers})
 
-    self.timeTracker = self.area:addGameObject('TimeTracker', 0, 0, {play = self})
+    self.timeTracker = self.area:addGameObject('TimeTracker', 0, 0, {play = self, modifiers = self.modifiers})
 
-    self.shop = self.area:addGameObject('ShopOverlay', 0, 0, {})
+    self.shop = self.area:addGameObject('ShopOverlay', 0, 0, {play = self})
 
     self.drop = nil
 
@@ -41,6 +93,33 @@ function Play:new()
 
 
     self:newLevel()
+end
+
+function Play:getShopOptions()
+    local first = love.math.random(#self.availableCharms)
+    local second = first
+    while second == first do second = love.math.random(#self.availableCharms) end
+
+    -- will return indexes
+    return {self.availableCharms[first], self.availableCharms[second]}
+end
+
+function Play:activateCharm(charmIndex)
+    for i, v in ipairs(self.availableCharms) do
+        if v == charmIndex then
+            table.remove(self.availableCharms, i)
+            break
+        end
+    end
+
+    table.insert(self.activeCharms, charmIndex)
+
+    local selectedCharmData = self.charmData[charmIndex]
+
+    for i = 1, #selectedCharmData.effects do
+        selectedCharmData.effects[i]()
+    end
+
 end
 
 function Play:newLevel()
@@ -64,8 +143,8 @@ function Play:newLevel()
 
     self.gameMode = current_level_data.mode
 
-    self.score:start(current_level_data.goal)
-    self.timeTracker:start(current_level_data.time)
+    self.score:start(current_level_data.goal * self.modifiers.goalScoreMult)
+    self.timeTracker:start(current_level_data.time + self.modifiers.additionalTime)
 
     local dropPos = {
         {gw / 2, 150},
@@ -76,7 +155,13 @@ function Play:newLevel()
 
     if self.drop ~= nil then self.drop:die() end
 
-    self.drop = self.area:addGameObject('Drop', selectedPos[1], selectedPos[2], {gameMode = self.gameMode, sprite = sprites.drop, w = 501, h = 235, score = self.score})
+    self.drop = self.area:addGameObject('Drop', selectedPos[1], selectedPos[2], {
+        gameMode = self.gameMode, 
+        sprite = sprites.drop, 
+        w = 501, h = 235, 
+        score = self.score,
+        modifiers = self.modifiers
+        })
 
     local spawnerDepth = 1
     M.each(current_level_data.spawners, 
@@ -84,9 +169,9 @@ function Play:newLevel()
             local spawnerData = self.spawnerData[spawnerKey]
             local pos = {}
             if self.gameMode == GameModes.ATTACK then
-                pos = {50, random(100, 600)}
+                pos = {50, love.math.random(100, 600)}
             else
-                pos = {random(200, 1400), 100}
+                pos = {love.math.random(200, 1400), 100}
             end
             
             self.area:addGameObject('Spawner', pos[1], pos[2], {
@@ -100,7 +185,7 @@ function Play:newLevel()
         end
     )
 
-    self.player = self.area:addGameObject('Player', 0, 0, {hands = 1})
+    self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers})
 
     --TODO load level data
 end

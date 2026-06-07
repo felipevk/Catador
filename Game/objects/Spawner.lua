@@ -10,6 +10,8 @@ function Spawner:new(area, x, y, opts)
 
     self.depth = opts.depth
 
+    self.modifiers = opts.modifiers
+
     self.dir = 100
 
     self.out = false
@@ -44,7 +46,7 @@ function Spawner:spawn()
         sprite = sprites.car1,
         colW = 280,
         colH = 184,
-        play = self
+        modifiers = self.modifiers
     })
 
     col:applyForce(unpack(self.spawnForces[self.gameMode]))
