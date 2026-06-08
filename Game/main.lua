@@ -61,7 +61,10 @@ function love.load()
         fishPanel = love.graphics.newImage("resources/sprites/fishPanel.jpg"),
         shopPanel = love.graphics.newImage("resources/sprites/shopPanel.jpg"),
         mainBG = love.graphics.newImage("resources/sprites/mainBackground.jpg"),
-        dropFill = love.graphics.newImage("resources/sprites/dropFill.png")
+        dropFill = love.graphics.newImage("resources/sprites/dropFill.png"),
+        tennis = love.graphics.newImage("resources/sprites/tennis.png"),
+        basket = love.graphics.newImage("resources/sprites/basket.png"),
+        tennisRacket = love.graphics.newImage("resources/sprites/tennisRacket.png")
     }
 
     sounds = {

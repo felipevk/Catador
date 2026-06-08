@@ -131,13 +131,15 @@ function Play:new()
     self.drop = nil
 
     self.spawnerData = {
-        bowler = {sprite = sprites.bowler, timeToSpawn = 2}
+        bowler = {sprite = sprites.bowler, timeToSpawn = 2, spawnForces = { {100000, -50000},{0, 100000} }, velocity = 100},
+        basket = {sprite = sprites.basket, timeToSpawn = 1.5, spawnForces = { {100000, -50000},{0, 100000} }, velocity = 200},
+        tennis = {sprite = sprites.tennis, timeToSpawn = 0.8, spawnForces = { {100000, -50000},{0, 100000} }, velocity = 150}
     }
 
     self.levelData = {
         {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler'}},
-        {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'bowler'}},
-        {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler', 'bowler', 'bowler'}},
+        {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'basket'}},
+        {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler', 'tennis', 'basket'}},
         {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'bowler', 'bowler'}}
     }
 
@@ -235,6 +237,8 @@ function Play:newLevel()
                 modifiers = self.modifiers,
                 sprite = spawnerData.sprite,
                 timeToSpawn = spawnerData.timeToSpawn,
+                spawnForces = spawnerData.spawnForces,
+                velocity = spawnerData.velocity,
                 depth = spawnerDepth
             })
 

@@ -14,7 +14,8 @@ function Spawner:new(area, x, y, opts)
 
     self.drop = opts.drop
 
-    self.dir = 100
+    self.velocity = opts.velocity or 100
+    self.spawnForces = opts.spawnForces
 
     self.out = false
 
@@ -25,15 +26,10 @@ function Spawner:new(area, x, y, opts)
                 self:spawn()
             end)
 
-    self.spawnForces = {
+    --[[self.spawnForces = {
         {100000, -50000},
         {0, 100000}
-    }
-
-    self.velocities = {
-        {100},
-        {100}
-    }
+    }]]
 
     self.boundaries = {
         {100, 850},
@@ -62,10 +58,10 @@ function Spawner:update(dt)
     local currAxis = self.axis[self.gameMode]
     local min, max = unpack(self.boundaries[self.gameMode])
     
-    self[currAxis] = self[currAxis] + self.dir * dt
+    self[currAxis] = self[currAxis] + self.velocity * dt
 
     if self[currAxis] < min or self[currAxis]> max then
-        self.dir = self.dir * -1
+        self.velocity = self.velocity * -1
     end
 end 
 
