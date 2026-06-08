@@ -25,8 +25,12 @@ function printText(...)
     print(M.reduce({...}, concat))
 end
 
+function getVectorMagnitude(x,y)
+    return math.sqrt(x*x + y*y)
+end
+
 function getUnitVector(x, y)
-    local magnitude = math.sqrt(x*x + y*y)
+    local magnitude = getVectorMagnitude(x, y)
     
     -- Prevent division by zero if the vector is (0,0)
     if magnitude == 0 then

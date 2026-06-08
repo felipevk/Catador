@@ -16,6 +16,25 @@ function Play:new()
         DEFENSE = 2
     }
 
+    self.spawnerData = {
+        bowler = {sprite = sprites.bowler, timeToSpawn = 2, spawnForces = { {1000, -500},{0, 1000} }, velocity = 100},
+        basket = {sprite = sprites.basket, timeToSpawn = 1.5, spawnForces = { {1000, -500},{0, 1000} }, velocity = 200},
+        tennis = {sprite = sprites.tennis, timeToSpawn = 0.8, spawnForces = { {1000, -500},{0, 1000} }, velocity = 150}
+    }
+
+    self.levelData = {
+        {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler'}},
+        {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'basket'}},
+        {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler', 'tennis', 'basket'}},
+        {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'bowler', 'bowler'}}
+    }
+
+    self.collectableData = {
+        { sprite = sprites.car1, w = 280, h = 184 },
+        { sprite = sprites.tennisBall, w = 76, h = 72 },
+        { sprite = sprites.tennisRacket, w = 270, h = 100 }
+    }
+
     self.modifiers = {
         hands = 1,
         goalScoreMult = 1, -- objective
@@ -130,19 +149,6 @@ function Play:new()
 
     self.drop = nil
 
-    self.spawnerData = {
-        bowler = {sprite = sprites.bowler, timeToSpawn = 2, spawnForces = { {100000, -50000},{0, 100000} }, velocity = 100},
-        basket = {sprite = sprites.basket, timeToSpawn = 1.5, spawnForces = { {100000, -50000},{0, 100000} }, velocity = 200},
-        tennis = {sprite = sprites.tennis, timeToSpawn = 0.8, spawnForces = { {100000, -50000},{0, 100000} }, velocity = 150}
-    }
-
-    self.levelData = {
-        {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler'}},
-        {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'basket'}},
-        {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler', 'tennis', 'basket'}},
-        {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'bowler', 'bowler'}}
-    }
-
     self.current_level = 0
 
 
@@ -220,7 +226,10 @@ function Play:newLevel()
         score = self.score,
         modifiers = self.modifiers
         })
+    self.drop:setActive(true)
+    
     local spawnerDepth = 1
+    
     M.each(current_level_data.spawners, 
         function(spawnerKey, _)
             local spawnerData = self.spawnerData[spawnerKey]
@@ -234,6 +243,7 @@ function Play:newLevel()
             self.area:addGameObject('Spawner', pos[1], pos[2], {
                 gameMode = self.gameMode,
                 drop = self.drop,
+                collectableData = self.collectableData,
                 modifiers = self.modifiers,
                 sprite = spawnerData.sprite,
                 timeToSpawn = spawnerData.timeToSpawn,
@@ -268,7 +278,7 @@ function Play:finishLevel(isWin)
     self.player:die()
 
     self.timeTracker:stop()
-    --TODO check win condition and open shop
+    self.drop:setActive(false)
 
     if isWin then
         -- TODO check if last level complete

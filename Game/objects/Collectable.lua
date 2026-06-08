@@ -11,6 +11,8 @@ function Collectable:new(area, x, y, opts)
     self.sprite = opts.sprite
     self.colW, self.colH = opts.colW, opts.colH
 
+    self.depth = 50
+
     self.collider = self.area.world:newRectangleCollider(
         self.x - self.colW / 2, 
         self.y - self.colH / 2, 
@@ -35,9 +37,9 @@ function Collectable:new(area, x, y, opts)
             function()
                 local aToB = { self.drop.x - self.x, self.drop.y - self.y }
                 local dir = getUnitVector(unpack(aToB))
-                local magnitude = 10000000
+                local magnitude = 100000
                 --print(self.drop)
-                self.collider:applyForce(dir.x * magnitude, dir.y * magnitude)
+                self.collider:applyForce(dir.x * magnitude * self.colW, dir.y * magnitude * self.colH)
             end)
     end
 end
@@ -50,9 +52,7 @@ end
 
 
 function Collectable:transitionOut()
-    if self.out then
-        return
-    end
+    if self.out then return end
     self.out = true
     --self.collider:setLinearVelocity(0, 0)
     self.collider:setSensor(true)
@@ -71,6 +71,15 @@ end
 
 function Collectable:update(dt)
     Collectable.super.update(self, dt)
+
+    if self.consumed then
+        local aToB = { self.drop.x - self.x, self.drop.y - self.y }
+        local dir = getUnitVector(unpack(aToB))
+        local dist = getVectorMagnitude(unpack(aToB))
+        local magnitude = 0.009 * dist
+        self.collider:setLinearVelocity(dir.x * magnitude * self.colW, dir.y * magnitude * self.colH)
+        return
+    end
 end 
 
 function Collectable:draw()

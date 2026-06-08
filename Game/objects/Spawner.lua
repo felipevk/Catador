@@ -17,6 +17,8 @@ function Spawner:new(area, x, y, opts)
     self.velocity = opts.velocity or 100
     self.spawnForces = opts.spawnForces
 
+    self.collectableData = opts.collectableData
+
     self.out = false
 
     self.s = 1
@@ -40,16 +42,21 @@ function Spawner:new(area, x, y, opts)
 end
 
 function Spawner:spawn()
+    local randomCollectableData = self.collectableData[love.math.random(#self.collectableData)]
+
     local col = self.area:addGameObject('Collectable', self.x, self.y, {
-        sprite = sprites.car1,
-        colW = 280,
-        colH = 184,
+        sprite = randomCollectableData.sprite,
+        colW = randomCollectableData.w,
+        colH = randomCollectableData.h,
         modifiers = self.modifiers,
         drop = self.drop
     })
 
     -- I have no idea how this worked. This method should be called on the collider and not the gameobject
-    col:applyForce(unpack(self.spawnForces[self.gameMode]))
+    local initialForce = self.spawnForces[self.gameMode]
+    initialForce.x = initialForce[1]
+    initialForce.y = initialForce[2]
+    col.collider:setLinearVelocity(unpack(initialForce))
 end
 
 function Spawner:update(dt)

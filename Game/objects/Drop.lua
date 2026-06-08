@@ -65,12 +65,20 @@ function Drop:new(area, x, y, opts)
     end
 
     self.score = opts.score
+
+    self.active = false
+end
+
+function Drop:setActive(isActive)
+    self.active = isActive
 end
 
 function Drop:update(dt)
     Drop.super.update(self, dt)
 
     if self.timer then self.timer:update(dt) end
+
+    if not self.active then return end
 
     local dropArea = self.dropArea[self.gameMode]
 
@@ -86,11 +94,11 @@ function Drop:update(dt)
         if not collectable.consumed then
             collectable:consume()
             self.score:add(self.modifiers.scoreMult)
-            local aToB = { self.x - collider:getX(), self.y - collider:getY() }
+            --[[local aToB = { self.x - collider:getX(), self.y - collider:getY() }
             local dir = getUnitVector(unpack(aToB))
-            local magnitude = 2000000
+            local magnitude = 5000
             collider:setLinearVelocity(0, 0)
-            collider:applyForce(dir.x * magnitude, dir.y * magnitude)
+            collider:applyForce(dir.x * magnitude * collectable.colW, dir.y * magnitude * collectable.colH)]]
         end
     end
 end 

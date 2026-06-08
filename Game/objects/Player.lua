@@ -7,6 +7,8 @@ function Player:new(area, x, y, opts)
     self.drop = opts.drop
     self.timeTracker = opts.timeTracker
 
+    self.depth = 100
+
     self.handData = {
         {sprite = { asset = sprites.hand1, position = {x = 0, y = 0} }, collider={x = 0, y = 0, w = 194, h = 74}},
         {sprite = { asset = sprites.hand1, position = {x = 300, y = 0} }, collider={x = 300, y = 0, w = 194, h = 74}},
