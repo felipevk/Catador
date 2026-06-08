@@ -57,7 +57,9 @@ function love.load()
         charm9 = love.graphics.newImage("resources/sprites/charm9.jpg"),
         charm10 = love.graphics.newImage("resources/sprites/charm10.jpg"),
         charm11 = love.graphics.newImage("resources/sprites/charm11.jpg"),
-        tennisBall = love.graphics.newImage("resources/sprites/tennisBall.png")
+        tennisBall = love.graphics.newImage("resources/sprites/tennisBall.png"),
+        fishPanel = love.graphics.newImage("resources/sprites/fishPanel.jpg"),
+        shopPanel = love.graphics.newImage("resources/sprites/shopPanel.jpg")
     }
 
     sounds = {

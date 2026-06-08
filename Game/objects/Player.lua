@@ -107,7 +107,7 @@ end
 
 function Player:stickToCollectable(collectableCol, handCol, handCenter)
     local collectable = collectableCol:getObject()
-    print(collectable, collectableCol)
+    --print(collectable, collectableCol)
     local joint = love.physics.newRopeJoint(
         handCol.body,
         collectableCol.body,

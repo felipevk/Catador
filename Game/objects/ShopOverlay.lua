@@ -128,8 +128,18 @@ function ShopOverlay:draw()
     love.graphics.setColor(unpack(self.backgroundColor))
     draft:rectangle(gw / 2, gh / 2, gw, gh, 'fill')
 
-    love.graphics.setColor(unpack(self.panelColor))
-    draft:rectangle(gw / 2, gh / 2, self.w , self.h, 'fill')
+    --love.graphics.setColor(unpack(self.panelColor))
+    --draft:rectangle(gw / 2, gh / 2, self.w , self.h, 'fill')
+
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(
+        sprites.shopPanel, 
+        gw / 2, gh / 2,
+        0, 
+        1, 1, 
+        sprites.shopPanel:getWidth() / 2, 
+        sprites.shopPanel:getHeight() / 2
+    )
 
     local buttonColor = (self.isHovered) and self.buttonData.hoveredColor or self.buttonData.color
     love.graphics.setColor(unpack(buttonColor))
@@ -152,8 +162,16 @@ function ShopOverlay:drawOption(rect, charmData, isSelected)
     local rectCenter = getCenter(rect)
     local startPadding = 20
 
-    love.graphics.setColor(unpack(self.optionColor))
+    love.graphics.setColor({1.0,1.0,1.0,0.75})
     draft:rectangle(rectCenter.x, rectCenter.y , rect.w, rect.h, 'fill')
+    --[[love.graphics.draw(
+        sprites.fishPanel, 
+        rectCenter.x, rectCenter.y,
+        0, 
+        1, 1, 
+        sprites.fishPanel:getWidth() / 2, 
+        sprites.fishPanel:getHeight() / 2
+    )]]
 
     if isSelected then
         love.graphics.setColor(unpack(self.optionOutlineColor))
