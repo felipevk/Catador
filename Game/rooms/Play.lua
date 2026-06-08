@@ -323,7 +323,9 @@ function Play:draw()
     love.graphics.setCanvas()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setBlendMode('alpha', 'premultiplied')
+    love.graphics.setShader(getMainShader())
     love.graphics.draw(self.room_canvas, 0, 0, 0, sx, sy)
+    love.graphics.setShader()
     love.graphics.setBlendMode('alpha')
 end
 

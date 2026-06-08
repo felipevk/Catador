@@ -79,6 +79,40 @@ function love.load()
         orange = {0.9255, 0.5686, 0.3333, 1.0}, -- ec9155
     }
 
+    shaders = {}
+
+    shaders.crt = love.graphics.newShader([[
+        extern vec2 screenSize;
+        extern float aberration;
+
+        vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc)
+        {
+            vec2 curved = uv * 2.0 - 1.0;
+            curved *= 1.0 + dot(curved, curved) * 0.08;
+            uv = curved * 0.5 + 0.5;
+
+            if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0)
+                return vec4(0.0, 0.0, 0.0, 1.0);
+
+            vec2 center = vec2(0.5, 0.5);
+            vec2 dir = uv - center;
+
+            vec2 offset = dir * aberration;
+
+            float r = Texel(tex, uv + offset).r;
+            float g = Texel(tex, uv).g;
+            float b = Texel(tex, uv - offset).b;
+            float a = Texel(tex, uv).a;
+
+            vec4 pixel = vec4(r, g, b, a);
+
+            float scanline = sin(uv.y * screenSize.y * 3.14159);
+            pixel.rgb *= 0.85 + 0.15 * scanline;
+
+            return pixel * color;
+        }
+        ]])
+
     sounds.main:setLooping(true)
     sounds.main:setVolume(0.1)
     sounds.main:play()
@@ -109,8 +143,13 @@ function love.update(dt)
 end
 
 function love.draw()
+    shaders.crt:send("screenSize", {gw * sx, gh * sy})
+    shaders.crt:send("aberration", 0.005)
+
+    love.graphics.setShader(getMainShader())
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(sprites.mainBG, 0, 0, 0, sx, sy)
+    love.graphics.setShader()
     if current_room then current_room:draw() end
 
     if flash_frames then 
@@ -123,7 +162,13 @@ function love.draw()
         love.graphics.setColor(1, 1, 1)
     end
 
+    --love.graphics.setShader()
+
     if debug then debugTools:draw() end
+end
+
+function getMainShader()
+    return (useShader) and shaders.crt or nil
 end
 
 function love.keypressed(key)
