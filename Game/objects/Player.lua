@@ -5,6 +5,7 @@ function Player:new(area, x, y, opts)
 
     self.handCount = opts.modifiers.hands
     self.drop = opts.drop
+    self.timeTracker = opts.timeTracker
 
     self.handData = {
         {sprite = { asset = sprites.hand1, position = {x = 0, y = 0} }, collider={x = 0, y = 0, w = 194, h = 74}},
@@ -59,7 +60,7 @@ function Player:update(dt)
         handCol:setX(x)
         handCol:setY(y)
 
-        if not self.modifiers.sticky and not self.modifiers.split then break end
+        if not self.modifiers.sticky and not self.modifiers.split and not self.modifiers.increaseTimeWithCollision then break end
 
         local rect = {
             x = x - w / 2,
@@ -79,6 +80,10 @@ function Player:update(dt)
 
         for _, collectableCol in ipairs(hits) do
             local collectable = collectableCol:getObject()
+
+            if self.modifiers.increaseTimeWithCollision and not collectable.consumed then
+                self.timeTracker:addTime(0.06)
+            end
 
             if self.modifiers.split and not collectable.consumed and not collectable.split and not collectable.dead then
                 self:splitCollectable(collectableCol)

@@ -26,6 +26,7 @@ function Play:new()
         homing = false,
         increaseTimeWithScore = false, -- every X points increase time by 1 second
         split = false,
+        increaseTimeWithCollision = false
     }
 
     self.effects = {
@@ -38,6 +39,7 @@ function Play:new()
         setHoming = function() self.modifiers.homing = true end,
         setIncreaseTimeWithScore = function() self.modifiers.increaseTimeWithScore = true end,
         setSplit = function() self.modifiers.split = true end,
+        setIncreaseTimeWithCollision = function() self.modifiers.increaseTimeWithCollision = true end
     }
 
     self.fxDescriptions = {
@@ -50,6 +52,7 @@ function Play:new()
         setHoming = 'Homing',
         setIncreaseTimeWithScore = 'Get time when you score',
         setSplit = 'Break things',
+        setIncreaseTimeWithCollision = 'Time on collision',
     }
 
     self.charmData = {
@@ -63,12 +66,12 @@ function Play:new()
             descriptions = {self.fxDescriptions.increaseHands}, 
             effects = {self.effects.increaseHands}
         },
-        --TODO make next 2 different
         {
             name = 'Mill', sprite = sprites.charm3, color = colors.pink, 
-            descriptions = {self.fxDescriptions.increaseHands}, 
-            effects = {self.effects.increaseHands}
+            descriptions = {self.fxDescriptions.setIncreaseTimeWithCollision}, 
+            effects = {self.effects.setIncreaseTimeWithCollision}
         },
+        --TODO make this different
         {
             name = 'Bless', sprite = sprites.charm4, color = colors.blue, 
             descriptions = {self.fxDescriptions.increaseHands}, 
@@ -146,9 +149,9 @@ function Play:new()
 end
 
 function Play:getShopOptions()
-    local first = love.math.random(#self.availableCharms)
+    --local first = love.math.random(#self.availableCharms)
+    local first = 3
     local second = first
-    --local first = 11
     --local second = 8
     while second == first do second = love.math.random(#self.availableCharms) end
 
@@ -198,7 +201,7 @@ function Play:newLevel()
     self.score:start(current_level_data.goal * self.modifiers.goalScoreMult)
     self.timeTracker:start(current_level_data.time + self.modifiers.additionalTime)
 
-    self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers, drop = self.drop})
+    self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers, drop = self.drop, timeTracker = self.timeTracker})
 
     local dropPos = {
         {gw / 2, 150},
