@@ -181,8 +181,16 @@ function Player:draw()
     love.graphics.setColor(1, 1, 1, 1)
 end
 
+function Player:die()
+    self.dead = true
+end
+
 function Player:destroy()
    Player.super.destroy(self)
+
+   for _, collider in ipairs(self.colliders) do
+    collider:destroy()
+   end
 end
 
 return Player

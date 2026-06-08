@@ -44,7 +44,7 @@ function Spawner:new(area, x, y, opts)
 end
 
 function Spawner:spawn()
-    col = self.area:addGameObject('Collectable', self.x, self.y, {
+    local col = self.area:addGameObject('Collectable', self.x, self.y, {
         sprite = sprites.car1,
         colW = 280,
         colH = 184,
