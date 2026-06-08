@@ -64,7 +64,9 @@ function love.load()
         dropFill = love.graphics.newImage("resources/sprites/dropFill.png"),
         tennis = love.graphics.newImage("resources/sprites/tennis.png"),
         basket = love.graphics.newImage("resources/sprites/basket.png"),
-        tennisRacket = love.graphics.newImage("resources/sprites/tennisRacket.png")
+        tennisRacket = love.graphics.newImage("resources/sprites/tennisRacket.png"),
+        ptero = love.graphics.newImage("resources/sprites/ptero.png"),
+        lizard = love.graphics.newImage("resources/sprites/lizard.png")
     }
 
     sounds = {

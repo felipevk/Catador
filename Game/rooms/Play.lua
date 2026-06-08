@@ -32,7 +32,9 @@ function Play:new()
     self.collectableData = {
         { sprite = sprites.car1, w = 280, h = 184 },
         { sprite = sprites.tennisBall, w = 76, h = 72 },
-        { sprite = sprites.tennisRacket, w = 270, h = 100 }
+        { sprite = sprites.tennisRacket, w = 270, h = 100 },
+        { sprite = sprites.ptero, w = 334, h = 74 },
+        { sprite = sprites.lizard, w = 90, h = 302 }
     }
 
     self.modifiers = {
