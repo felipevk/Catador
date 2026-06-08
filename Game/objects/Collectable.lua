@@ -28,6 +28,7 @@ function Collectable:new(area, x, y, opts)
     self.s = 1
     self.isAttached = false
     self.jointID = -1
+    self.split = false
 
     if self.modifiers.homing then
         self.timer:every(1,
@@ -75,7 +76,7 @@ end
 function Collectable:draw()
     love.graphics.draw(self.sprite, self.collider:getX(), self.collider:getY(), self.collider:getAngle(), self.s, self.s, self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
     if debug then
-        love.graphics.setColor(1, 0, 0, 1)
+        if self.split then love.graphics.setColor(0, 0, 0.8, 1)  else love.graphics.setColor(1, 0, 0, 1) end
         draft:square(self.collider:getX(), self.collider:getY(), 30, 'fill')
         love.graphics.setColor(1, 1, 1, 1)
     end

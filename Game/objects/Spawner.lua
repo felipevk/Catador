@@ -52,6 +52,7 @@ function Spawner:spawn()
         drop = self.drop
     })
 
+    -- I have no idea how this worked. This method should be called on the collider and not the gameobject
     col:applyForce(unpack(self.spawnForces[self.gameMode]))
 end
 

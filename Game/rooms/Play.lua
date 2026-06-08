@@ -146,9 +146,10 @@ function Play:new()
 end
 
 function Play:getShopOptions()
-    --local first = love.math.random(#self.availableCharms)
-    local first = 10
+    local first = love.math.random(#self.availableCharms)
     local second = first
+    --local first = 11
+    --local second = 8
     while second == first do second = love.math.random(#self.availableCharms) end
 
     -- will return indexes
@@ -197,7 +198,7 @@ function Play:newLevel()
     self.score:start(current_level_data.goal * self.modifiers.goalScoreMult)
     self.timeTracker:start(current_level_data.time + self.modifiers.additionalTime)
 
-    self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers})
+    self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers, drop = self.drop})
 
     local dropPos = {
         {gw / 2, 150},
@@ -258,7 +259,7 @@ function Play:finishLevel(isWin)
     end
 
     self.player:clearJoints()
-    self.player:destroy()
+    self.player:die()
 
     self.timeTracker:stop()
     --TODO check win condition and open shop

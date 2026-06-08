@@ -56,7 +56,8 @@ function love.load()
         charm8 = love.graphics.newImage("resources/sprites/charm8.jpg"),
         charm9 = love.graphics.newImage("resources/sprites/charm9.jpg"),
         charm10 = love.graphics.newImage("resources/sprites/charm10.jpg"),
-        charm11 = love.graphics.newImage("resources/sprites/charm11.jpg")
+        charm11 = love.graphics.newImage("resources/sprites/charm11.jpg"),
+        tennisBall = love.graphics.newImage("resources/sprites/tennisBall.png")
     }
 
     sounds = {

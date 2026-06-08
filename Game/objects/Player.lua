@@ -3,9 +3,8 @@ local Player = GameObject:extend()
 function Player:new(area, x, y, opts)
     Player.super.new(self, area, x, y, opts)
 
-    self.x, self.y = x, y
-
     self.handCount = opts.modifiers.hands
+    self.drop = opts.drop
 
     self.handData = {
         {sprite = { asset = sprites.hand1, position = {x = 0, y = 0} }, collider={x = 0, y = 0, w = 194, h = 74}},
@@ -60,7 +59,7 @@ function Player:update(dt)
         handCol:setX(x)
         handCol:setY(y)
 
-        if not self.modifiers.sticky then break end
+        if not self.modifiers.sticky and not self.modifiers.split then break end
 
         local rect = {
             x = x - w / 2,
@@ -78,25 +77,16 @@ function Player:update(dt)
 
         local handCenter = getCenter(rect)
 
-        for _, collider in ipairs(hits) do
-            local collectable = collider:getObject()
-            if not collectable.consumed and not collectable.isAttached then
-                local joint = love.physics.newRopeJoint(
-                    handCol.body,
-                    collider.body,
-                    handCenter.x, handCenter.y,
-                    collider:getX(), collider:getY(),
-                    400,
-                    true
-                )
-                local newId = UUID()
-                table.insert(self.joints, {idx = newId, j = joint, attached = collectable})
+        for _, collectableCol in ipairs(hits) do
+            local collectable = collectableCol:getObject()
 
-                --print('Created joint with id '.. newId)
+            if self.modifiers.split and not collectable.consumed and not collectable.split and not collectable.dead then
+                self:splitCollectable(collectableCol)
+                break
+            end
 
-                --print(self.joints, #self.joints)
-                
-                collectable.isAttached = true
+            if self.modifiers.sticky and not collectable.consumed and not collectable.isAttached then
+                self:stickToCollectable(collectableCol, handCol, handCenter)
             end
         end
 
@@ -109,6 +99,49 @@ function Player:update(dt)
         end
     end
 end 
+
+function Player:stickToCollectable(collectableCol, handCol, handCenter)
+    local collectable = collectableCol:getObject()
+    print(collectable, collectableCol)
+    local joint = love.physics.newRopeJoint(
+        handCol.body,
+        collectableCol.body,
+        handCenter.x, handCenter.y,
+        collectableCol:getX(), collectableCol:getY(),
+        400,
+        true
+    )
+    local newId = UUID()
+    table.insert(self.joints, {idx = newId, j = joint, attached = collectable})
+
+    --print('Created joint with id '.. newId)
+    --print(self.joints, #self.joints)
+    
+    collectable.isAttached = true
+end
+
+function Player:splitCollectable(collectableCol)
+    local collectable = collectableCol:getObject()
+    local spawnPos = { x = collectableCol:getX(), y = collectableCol:getY()}
+    collectable:die()
+
+    local spawnForces = {
+        {-20000, -5000},
+        {0, -9000},
+        {20000, -5000}
+    }
+    for i = 1, 3 do
+        local col = self.area:addGameObject('Collectable', spawnPos.x, spawnPos.y, {
+            sprite = sprites.tennisBall,
+            colW = 76,
+            colH = 72,
+            modifiers = self.modifiers,
+            drop = self.drop
+        })
+        col:applyForce(unpack(spawnForces[i]))
+        col.split = true
+    end
+end
 
 function Player:hasUsedJointID(id)
     for index, value in ipairs(self.usedIds) do

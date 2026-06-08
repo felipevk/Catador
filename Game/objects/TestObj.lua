@@ -10,7 +10,7 @@ function TestObj:update(dt)
 end 
 
 function TestObj:draw()
-    local sprite = sprites.charm1
+    local sprite = sprites.tennisBall
     love.graphics.setColor(unpack(colors.purple))
     love.graphics.draw(sprite, self.x, self.y, 0, 0.75, 0.75, sprite:getWidth() / 2, sprite:getHeight() / 2)
     if debug then
