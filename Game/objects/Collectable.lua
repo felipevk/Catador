@@ -1,11 +1,12 @@
 local Collectable = GameObject:extend()
+local unpack = _G.unpack or table.unpack
 
 function Collectable:new(area, x, y, opts)
     Collectable.super.new(self, area, x, y, opts)
 
     self.modifiers = opts.modifiers
 
-    self.player = opts.player
+    self.drop = opts.drop
 
     self.sprite = opts.sprite
     self.colW, self.colH = opts.colW, opts.colH
@@ -27,6 +28,17 @@ function Collectable:new(area, x, y, opts)
     self.s = 1
     self.isAttached = false
     self.jointID = -1
+
+    if self.modifiers.homing then
+        self.timer:every(1,
+            function()
+                local aToB = { self.drop.x - self.x, self.drop.y - self.y }
+                local dir = getUnitVector(unpack(aToB))
+                local magnitude = 10000000
+                --print(self.drop)
+                self.collider:applyForce(dir.x * magnitude, dir.y * magnitude)
+            end)
+    end
 end
 
 function Collectable:consume()

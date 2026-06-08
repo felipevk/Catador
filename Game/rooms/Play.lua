@@ -147,7 +147,7 @@ end
 
 function Play:getShopOptions()
     --local first = love.math.random(#self.availableCharms)
-    local first = 8
+    local first = 9
     local second = first
     while second == first do second = love.math.random(#self.availableCharms) end
 
@@ -215,7 +215,6 @@ function Play:newLevel()
         score = self.score,
         modifiers = self.modifiers
         })
-
     local spawnerDepth = 1
     M.each(current_level_data.spawners, 
         function(spawnerKey, _)
@@ -229,7 +228,7 @@ function Play:newLevel()
             
             self.area:addGameObject('Spawner', pos[1], pos[2], {
                 gameMode = self.gameMode,
-                player = self.player,
+                drop = self.drop,
                 modifiers = self.modifiers,
                 sprite = spawnerData.sprite,
                 timeToSpawn = spawnerData.timeToSpawn,

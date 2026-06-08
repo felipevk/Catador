@@ -12,7 +12,7 @@ function Spawner:new(area, x, y, opts)
 
     self.modifiers = opts.modifiers
 
-    self.player = opts.player
+    self.drop = opts.drop
 
     self.dir = 100
 
@@ -49,7 +49,7 @@ function Spawner:spawn()
         colW = 280,
         colH = 184,
         modifiers = self.modifiers,
-        player = self.player
+        drop = self.drop
     })
 
     col:applyForce(unpack(self.spawnForces[self.gameMode]))
