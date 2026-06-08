@@ -161,6 +161,13 @@ function ShopOverlay:drawOption(rect, charmData, isSelected)
         draft:rectangle(rectCenter.x, rectCenter.y , rect.w, rect.h, 'line')
         love.graphics.setLineWidth(1)
     end
+
+    local font = love.graphics.newFont(40)
+    love.graphics.setFont(font)
+    love.graphics.setColor({0.0,0.0,0.0,1.0})
+    local lineHeight = font:getHeight()
+
+    printInsideRect(charmData.name, font, 'top', startPadding, rect)
     
     love.graphics.setColor(unpack(charmData.color))
     local sprite = charmData.sprite
@@ -168,21 +175,19 @@ function ShopOverlay:drawOption(rect, charmData, isSelected)
     love.graphics.draw(
         charmData.sprite, 
         rectCenter.x, 
-        rect.y + startPadding, 
+        rect.y + startPadding + lineHeight + 5, 
         0, 
         spriteScale, spriteScale, 
         sprite:getWidth() / 2, 
         0
     )
 
-    local font = love.graphics.newFont(40)
     love.graphics.setFont(font)
     love.graphics.setColor({0.0,0.0,0.0,1.0})
 
-    local startTextY = rect.y + (sprite:getHeight() * spriteScale) + startPadding
+    local startTextY = rect.y + (sprite:getHeight() * spriteScale) + startPadding + 25
     for i = 1 , #charmData.descriptions do
         local text = charmData.descriptions[i]
-        local lineHeight = font:getHeight()
         local textRect = {
             x = rectCenter.x - font:getWidth(text) / 2, 
             y = startTextY + i * (lineHeight + 5), 

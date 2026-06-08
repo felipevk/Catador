@@ -184,7 +184,9 @@ end
 
 function Player:clearJoints()
     for i = 1, #self.joints do
-        self.joints[i].j:destroy()
+        if self.joints[i].j and not self.joints[i].j:isDestroyed() then
+            self.joints[i].j:destroy()
+        end
     end
     self.joints = {}
 end

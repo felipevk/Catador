@@ -50,7 +50,7 @@ function Play:new()
         setBouncy = 'Bouncy',
         setSticky = 'Sticky',
         setHoming = 'Homing',
-        setIncreaseTimeWithScore = 'Get time when you score',
+        setIncreaseTimeWithScore = 'Time on score',
         setSplit = 'Break things',
         setIncreaseTimeWithCollision = 'Time on collision',
     }
@@ -71,7 +71,6 @@ function Play:new()
             descriptions = {self.fxDescriptions.setIncreaseTimeWithCollision}, 
             effects = {self.effects.setIncreaseTimeWithCollision}
         },
-        --TODO make this different
         {
             name = 'Bless', sprite = sprites.charm4, color = colors.blue, 
             descriptions = {self.fxDescriptions.increaseHands}, 
@@ -149,8 +148,8 @@ function Play:new()
 end
 
 function Play:getShopOptions()
-    --local first = love.math.random(#self.availableCharms)
-    local first = 3
+    local first = love.math.random(#self.availableCharms)
+    --local first = 3
     local second = first
     --local second = 8
     while second == first do second = love.math.random(#self.availableCharms) end
