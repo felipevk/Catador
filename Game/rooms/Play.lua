@@ -7,6 +7,7 @@ function Play:new()
     self.area.world:addCollisionClass('Player')
     self.area.world:addCollisionClass('Collectable')
     self.area.world:addCollisionClass('DropWall')
+    self.area.world:addCollisionClass('CharmDisplay')
     self.room_canvas = love.graphics.newCanvas(gw, gh)
 
     self.demoFont = love.graphics.newFont(40)
@@ -149,10 +150,11 @@ function Play:new()
 
     self.shop = self.area:addGameObject('ShopOverlay', 0, 0, {play = self})
 
+    self.charmDisplay = self.area:addGameObject('CharmDisplay', gw * 0.9, 25, {})
+
     self.drop = nil
 
     self.current_level = 0
-
 
     self:newLevel()
 end
@@ -230,7 +232,7 @@ function Play:newLevel()
         })
     self.drop:setActive(true)
     
-    local spawnerDepth = 1
+    local spawnerDepth = 10
     
     M.each(current_level_data.spawners, 
         function(spawnerKey, _)
@@ -258,7 +260,12 @@ function Play:newLevel()
         end
     )
 
-    --TODO load level data
+    local activeCharmsData = {}
+    for _, i in ipairs(self.activeCharms) do
+        table.insert(activeCharmsData, self.charmData[i])
+    end
+    self.charmDisplay:setCharms(activeCharmsData)
+
 end
 
 function Play:finishLevel(isWin)
