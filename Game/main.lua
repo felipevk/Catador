@@ -59,7 +59,9 @@ function love.load()
         charm11 = love.graphics.newImage("resources/sprites/charm11.jpg"),
         tennisBall = love.graphics.newImage("resources/sprites/tennisBall.png"),
         fishPanel = love.graphics.newImage("resources/sprites/fishPanel.jpg"),
-        shopPanel = love.graphics.newImage("resources/sprites/shopPanel.jpg")
+        shopPanel = love.graphics.newImage("resources/sprites/shopPanel.jpg"),
+        mainBG = love.graphics.newImage("resources/sprites/mainBackground.jpg"),
+        dropFill = love.graphics.newImage("resources/sprites/dropFill.png")
     }
 
     sounds = {
@@ -107,6 +109,8 @@ function love.update(dt)
 end
 
 function love.draw()
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(sprites.mainBG, 0, 0, 0, sx, sy)
     if current_room then current_room:draw() end
 
     if flash_frames then 

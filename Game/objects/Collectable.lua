@@ -54,9 +54,9 @@ function Collectable:transitionOut()
         return
     end
     self.out = true
-    self.collider:setLinearVelocity(0, 0)
+    --self.collider:setLinearVelocity(0, 0)
     self.collider:setSensor(true)
-    self.collider:setType('kinematic')
+    --self.collider:setType('kinematic')
     --if self.isAttached then self.player:clearJoint(self.jointID) end
 
     self.timer:tween(1.0, self, {s = 0}, 'in-out-cubic',
