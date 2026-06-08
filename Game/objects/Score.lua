@@ -4,11 +4,12 @@ function Score:new(area, x, y, opts)
     Score.super.new(self, area, x, y, opts)
 
     self.play = opts.play
+    self.modifiers = opts.modifiers
 end
 
 function Score:start(goal)
     self.points = 0
-    self.goal = goal
+    self.goal = goal * self.modifiers.goalScoreMult
 end 
 
 function Score:update(dt)
@@ -18,7 +19,7 @@ end
 function Score:draw()
     local demoFont = love.graphics.newFont(40)
     love.graphics.setFont(demoFont)
-    printInsideRect("Score: " .. self.points, demoFont, "bottomLeft")
+    printInsideRect("Score: " .. self.points .. " / " .. self.goal, demoFont, "bottomLeft")
 end
 
 function Score:add(points)

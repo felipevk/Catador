@@ -18,6 +18,7 @@ function Player:new(area, x, y, opts)
 
     self.colliders = {}
     self.sprites = {}
+    self.joints = {}
 
     for i = 1, self.handCount do
         self.sprites[i] = self.handData[i].sprite.asset
@@ -49,10 +50,74 @@ function Player:update(dt)
     self.y = love.mouse.getY() / sy
 
     for i = 1, self.handCount do
-        self.colliders[i]:setX(self.x + self.handData[i].collider.x)
-        self.colliders[i]:setY(self.y + self.handData[i].collider.y)
+        local handCol = self.colliders[i]
+
+        local x = self.x + self.handData[i].collider.x
+        local y = self.y + self.handData[i].collider.y
+        local w = self.handData[i].collider.w
+        local h = self.handData[i].collider.h
+
+        handCol:setX(x)
+        handCol:setY(y)
+
+        if not self.modifiers.sticky then break end
+
+        local rect = {
+            x = x - w / 2,
+            y = y - h / 2,
+            w = w,
+            h = h
+        }
+        local hits = self.area.world:queryRectangleArea(
+            rect.x, 
+            rect.y, 
+            rect.w,
+            rect.h,
+            {'Collectable'}
+        )
+
+        local handCenter = getCenter(rect)
+
+        for _, collider in ipairs(hits) do
+            local collectable = collider:getObject()
+            if not collectable.consumed and not collectable.isAttached then
+                local joint = love.physics.newRopeJoint(
+                    handCol.body,
+                    collider.body,
+                    handCenter.x, handCenter.y,
+                    collider:getX(), collider:getY(),
+                    400,
+                    true
+                )
+                local newId = UUID()
+                table.insert(self.joints, {idx = newId, j = joint, attached = collectable})
+
+                --print('Created joint with id '.. newId)
+
+                --print(self.joints, #self.joints)
+                
+                collectable.isAttached = true
+            end
+        end
+
+    end
+
+    for i = #self.joints, 1, -1 do
+        if self.joints[i].attached.out then
+            self.joints[i].j:destroy()
+            table.remove(self.joints, i)
+        end
     end
 end 
+
+function Player:hasUsedJointID(id)
+    for index, value in ipairs(self.usedIds) do
+        if value == id then
+            return true
+        end
+    end
+    return false
+end
 
 function Player:ToggleClick(toggle)
     self.isClick = toggle
@@ -60,6 +125,30 @@ function Player:ToggleClick(toggle)
     for i = 1, self.handCount do
         self.colliders[i]:setSensor(self.isClick)
     end
+end
+
+function Player:clearJoint(id)
+    --print('Trying to clear joint '..id)
+    --print(self.joints, #self.joints)
+    local cleared = false
+    for i, jointEntry in ipairs(self.joints) do
+        --print('Checking joint with id: '..jointEntry.idx)
+        if jointEntry.idx == id then 
+            table.remove(self.joints, i)
+            jointEntry.j:destroy()
+            cleared = true
+            --print('Joint cleared')
+            break 
+        end
+    end
+    --if not cleared then error("Something went wrong with the game logic!") end
+end
+
+function Player:clearJoints()
+    for i = 1, #self.joints do
+        self.joints[i].j:destroy()
+    end
+    self.joints = {}
 end
 
 function Player:draw()
@@ -77,7 +166,18 @@ function Player:draw()
         self.colliders[i]:setX(self.x + self.handData[i].collider.x)
         self.colliders[i]:setY(self.y + self.handData[i].collider.y)
     end
-    --love.graphics.draw(self.sprite, self.x, self.y, 0, nil, nil, self.w / 2, self.h / 2)
+    
+    for i, jointEntry in ipairs(self.joints) do
+        if not jointEntry.j then break end
+
+        if jointEntry.j and not jointEntry.j:isDestroyed() then
+            local x1, y1, x2, y2 = jointEntry.j:getAnchors()
+            love.graphics.setColor(unpack(colors.orange))
+            love.graphics.setLineWidth(5)
+            love.graphics.line(x1, y1, x2, y2)
+        end
+    end
+
     love.graphics.setColor(1, 1, 1, 1)
 end
 

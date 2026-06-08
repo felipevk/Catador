@@ -24,7 +24,7 @@ function Play:new()
         bouncy = false,
         sticky = false,
         homing = false,
-        increaseTime = false, -- every X points increase time by 1 second
+        increaseTimeWithScore = false, -- every X points increase time by 1 second
         split = false,
     }
 
@@ -36,29 +36,79 @@ function Play:new()
         setBouncy = function() self.modifiers.bouncy = true end,
         setSticky= function() self.modifiers.sticky = true end,
         setHoming = function() self.modifiers.homing = true end,
-        setIncreaseTime = function() self.modifiers.increaseTime = true end,
+        setIncreaseTimeWithScore = function() self.modifiers.increaseTimeWithScore = true end,
         setSplit = function() self.modifiers.split = true end,
     }
 
     self.fxDescriptions = {
         nothing = 'Nothing',
-        addHand = '+1 hand',
-        addTime = 'Additional time',
-        scoreMult = 'Score more points',
+        increaseHands = '+1 hand',
+        increaseTime = 'Additional time',
+        setScoreMult2 = 'Score more points',
+        setBouncy = 'Bouncy',
+        setSticky = 'Sticky',
+        setHoming = 'Homing',
+        setIncreaseTimeWithScore = 'Get time when you score',
+        setSplit = 'Break things',
     }
 
     self.charmData = {
-        {name = 'Journey', sprite = sprites.charm1, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.increaseHands}},
-        {name = 'Face', sprite = sprites.charm2, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
-        {name = 'Mill', sprite = sprites.charm3, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
-        {name = 'Bless', sprite = sprites.charm4, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
-        {name = 'Elder', sprite = sprites.charm5, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
-        {name = 'Graveyard', sprite = sprites.charm6, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
-        {name = 'Yeller', sprite = sprites.charm7, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
-        {name = 'Tree', sprite = sprites.charm8, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
-        {name = 'Gnome', sprite = sprites.charm9, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
-        {name = 'Babuska', sprite = sprites.charm10, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}},
-        {name = 'Queen', sprite = sprites.charm11, color = colors.purple, descriptions = {self.fxDescriptions.nothing}, effects = {self.effects.nothing}}
+        {
+            name = 'Journey', sprite = sprites.charm1, color = colors.purple, 
+            descriptions = {self.fxDescriptions.increaseHands, self.fxDescriptions.increaseTime}, 
+            effects = {self.effects.increaseHands, self.effects.increaseTime}
+        },
+        {
+            name = 'Face', sprite = sprites.charm2, color = colors.red, 
+            descriptions = {self.fxDescriptions.increaseHands}, 
+            effects = {self.effects.increaseHands}
+        },
+        --TODO make next 2 different
+        {
+            name = 'Mill', sprite = sprites.charm3, color = colors.pink, 
+            descriptions = {self.fxDescriptions.increaseHands}, 
+            effects = {self.effects.increaseHands}
+        },
+        {
+            name = 'Bless', sprite = sprites.charm4, color = colors.blue, 
+            descriptions = {self.fxDescriptions.increaseHands}, 
+            effects = {self.effects.increaseHands}
+        },
+        {
+            name = 'Elder', sprite = sprites.charm5, color = colors.cyan, 
+            descriptions = {self.fxDescriptions.increaseTime}, 
+            effects = {self.effects.increaseTime}
+        },
+        {
+            name = 'Graveyard', sprite = sprites.charm6, color = colors.green, 
+            descriptions = {self.fxDescriptions.setScoreMult2}, 
+            effects = {self.effects.setScoreMult2}
+        },
+        {
+            name = 'Yeller', sprite = sprites.charm7, color = colors.yellow, 
+            descriptions = {self.fxDescriptions.setBouncy}, 
+            effects = {self.effects.setBouncy}
+        },
+        {
+            name = 'Tree', sprite = sprites.charm8, color = colors.orange, 
+            descriptions = {self.fxDescriptions.setSticky}, 
+            effects = {self.effects.setSticky}
+        },
+        {
+            name = 'Gnome', sprite = sprites.charm9, color = colors.purple, 
+            descriptions = {self.fxDescriptions.setHoming}, 
+            effects = {self.effects.setHoming}
+        },
+        {
+            name = 'Babuska', sprite = sprites.charm10, color = colors.red, 
+            descriptions = {self.fxDescriptions.setIncreaseTimeWithScore}, 
+            effects = {self.effects.setIncreaseTimeWithScore}
+        },
+        {
+            name = 'Queen', sprite = sprites.charm11, color = colors.blue, 
+            descriptions = {self.fxDescriptions.setSplit}, 
+            effects = {self.effects.setSplit}
+        }
     }
 
     self.availableCharms = {}
@@ -84,9 +134,9 @@ function Play:new()
 
     self.levelData = {
         {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler'}},
-        {mode = GameModes.DEFENSE, goal = 3, time = 10, spawners = {'bowler', 'bowler'}},
-        {mode = GameModes.ATTACK, goal = 3, time = 10, spawners = {'bowler', 'bowler', 'bowler'}},
-        {mode = GameModes.DEFENSE, goal = 3, time = 10, spawners = {'bowler', 'bowler', 'bowler'}}
+        {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'bowler'}},
+        {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler', 'bowler', 'bowler'}},
+        {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'bowler', 'bowler'}}
     }
 
     self.current_level = 0
@@ -96,7 +146,8 @@ function Play:new()
 end
 
 function Play:getShopOptions()
-    local first = love.math.random(#self.availableCharms)
+    --local first = love.math.random(#self.availableCharms)
+    local first = 8
     local second = first
     while second == first do second = love.math.random(#self.availableCharms) end
 
@@ -146,6 +197,8 @@ function Play:newLevel()
     self.score:start(current_level_data.goal * self.modifiers.goalScoreMult)
     self.timeTracker:start(current_level_data.time + self.modifiers.additionalTime)
 
+    self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers})
+
     local dropPos = {
         {gw / 2, 150},
         {gw / 2, gh - 150}
@@ -176,6 +229,8 @@ function Play:newLevel()
             
             self.area:addGameObject('Spawner', pos[1], pos[2], {
                 gameMode = self.gameMode,
+                player = self.player,
+                modifiers = self.modifiers,
                 sprite = spawnerData.sprite,
                 timeToSpawn = spawnerData.timeToSpawn,
                 depth = spawnerDepth
@@ -184,8 +239,6 @@ function Play:newLevel()
             spawnerDepth = spawnerDepth + 1
         end
     )
-
-    self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers})
 
     --TODO load level data
 end
@@ -205,6 +258,7 @@ function Play:finishLevel(isWin)
         )
     end
 
+    self.player:clearJoints()
     self.player:destroy()
 
     self.timeTracker:stop()

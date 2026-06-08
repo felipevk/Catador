@@ -5,6 +5,8 @@ function Collectable:new(area, x, y, opts)
 
     self.modifiers = opts.modifiers
 
+    self.player = opts.player
+
     self.sprite = opts.sprite
     self.colW, self.colH = opts.colW, opts.colH
 
@@ -18,10 +20,13 @@ function Collectable:new(area, x, y, opts)
     self.collider:setObject(self)
     self.collider:setFixedRotation(false)
     self.collider:setSleepingAllowed(false)
+    if self.modifiers.bouncy then self.collider:setRestitution(0.8) end
 
     self.consumed = false
     self.out = false
     self.s = 1
+    self.isAttached = false
+    self.jointID = -1
 end
 
 function Collectable:consume()
@@ -37,6 +42,7 @@ function Collectable:transitionOut()
     end
     self.out = true
     self.collider:setSensor(true)
+    --if self.isAttached then self.player:clearJoint(self.jointID) end
 
     self.timer:tween(1.0, self, {s = 0}, 'in-out-cubic',
         function() 
