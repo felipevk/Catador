@@ -120,9 +120,9 @@ function Play:new()
 
     self.gameMode = 0
 
-    self.score = self.area:addGameObject('Score', 0, 0, {play = self, modifiers = self.modifiers})
-
     self.timeTracker = self.area:addGameObject('TimeTracker', 0, 0, {play = self, modifiers = self.modifiers})
+
+    self.score = self.area:addGameObject('Score', 0, 0, {play = self, modifiers = self.modifiers, timeTracker = self.timeTracker})
 
     self.shop = self.area:addGameObject('ShopOverlay', 0, 0, {play = self})
 
@@ -147,7 +147,7 @@ end
 
 function Play:getShopOptions()
     --local first = love.math.random(#self.availableCharms)
-    local first = 9
+    local first = 10
     local second = first
     while second == first do second = love.math.random(#self.availableCharms) end
 

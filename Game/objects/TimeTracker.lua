@@ -19,6 +19,11 @@ function TimeTracker:stop()
     self.counting = false
 end
 
+function TimeTracker:addTime(amount)
+    self.totalTime = self.totalTime + amount
+    self.timeLeft = self.timeLeft + amount
+end
+
 function TimeTracker:update(dt)
     TimeTracker.super.update(self, dt)
 

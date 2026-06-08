@@ -5,6 +5,7 @@ function Score:new(area, x, y, opts)
 
     self.play = opts.play
     self.modifiers = opts.modifiers
+    self.timeTracker = opts.timeTracker
 end
 
 function Score:start(goal)
@@ -27,6 +28,10 @@ function Score:add(points)
 
     if self.points >= self.goal then
         self.play:finishLevel(self.play.gameMode == GameModes.ATTACK)
+    end
+
+    if self.modifiers.increaseTimeWithScore then
+        if points >= 1 then self.timeTracker:addTime(2) end
     end
 end
 
