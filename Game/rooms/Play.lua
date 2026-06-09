@@ -26,7 +26,7 @@ function Play:new()
     self.levelData = {
         -- ATTACK
         { 
-            { goal = 5, time = 10, spawners = {'tennis'} }, 
+            { goal = 2, time = 10, spawners = {'tennis'} }, 
             { goal = 2, time = 12, spawners = {'bowler', 'basket'} }, 
             { goal = 4, time = 10, spawners = {'bowler', 'tennis', 'basket'} }, 
             { goal = 6, time = 11, spawners = {'basket', 'tennis', 'bowler'} }, 
@@ -36,7 +36,7 @@ function Play:new()
        
         -- DEFENSE
         { 
-            { goal = 5, time = 10, spawners = {'bowler', 'basket'} }, 
+            { goal = 4, time = 10, spawners = {'bowler', 'basket'} }, 
             { goal = 4, time = 10, spawners = {'bowler', 'bowler', 'bowler'} }, 
             { goal = 5, time = 8, spawners = {'tennis', 'basket', 'tennis'} }, 
             { goal = 6, time = 5, spawners = {'tennis', 'tennis', 'tennis'} }, 
@@ -375,7 +375,6 @@ function Play:draw()
     love.graphics.clear()
     camera:attach(0, 0, gw, gh)
         self.area:draw()
-        --love.graphics.setFont(self.demoFont)
   	camera:detach()
     love.graphics.setCanvas()
     love.graphics.setColor(1, 1, 1, 1)

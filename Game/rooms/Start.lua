@@ -7,7 +7,9 @@ function Start:new()
 
     self.demoFont = love.graphics.newFont(40)
 
-    self.area:addGameObject('TestObj', gw / 2, gh /2 , {})
+    --self.area:addGameObject('TestObj', gw / 2, gh /2 , {})
+
+    self.font = getGameFont()
 end
 
 function Start:update(dt)
@@ -39,8 +41,9 @@ function Start:draw()
     love.graphics.clear()
     camera:attach(0, 0, gw, gh)
         self.area:draw()
-        --love.graphics.setFont(self.demoFont)
-        --printInsideRect("Click to Start", fonts.angelic, "bottom")
+        love.graphics.setColor(unpack(colors.blue))
+        love.graphics.setFont(self.font)
+        printInsideRect("Click to Play", self.font, "center")
   	camera:detach()
     love.graphics.setCanvas()
     love.graphics.setColor(1, 1, 1, 1)

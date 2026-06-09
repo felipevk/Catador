@@ -19,7 +19,7 @@ function love.load()
     camera = Camera()
     draft = Draft()
 
-    resize(0.5)
+    resize(0.8)
 
     GameObject = require("objects/GameObject")
 
@@ -79,7 +79,13 @@ function love.load()
     }
 
     fonts = {
-        angelic = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", 40)
+        angelic = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", 40),
+        jogrunge = love.graphics.newFont("resources/fonts/JOGRUNGE.otf", 40),
+        friendlySans = love.graphics.newFont("resources/fonts/FriendlySans-Regular.ttf", 40),
+        pixelatedElegance = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", 40),
+        latinaPopular = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", 40),
+        anotherTypewritter = love.graphics.newFont("resources/fonts/atwriter.ttf", 40),
+        vinqueAntique = love.graphics.newFont("resources/fonts/vinque antique bd.otf", 40)
     }
 
     colors = {
@@ -154,11 +160,21 @@ function love.load()
 end
 
 function getGameFont()
-    if love.math.random() < 0.9 then
-        return love.graphics.newFont(40)
-    else
+    if love.math.random() > 0.9 then
         return fonts.angelic
     end
+
+    local regularFonts = {
+        fonts.jogrunge,
+        fonts.friendlySans,
+        fonts.vinqueAntique,
+        fonts.pixelatedElegance,
+        fonts.latinaPopular,
+        fonts.anotherTypewritter
+    }
+    local selected = regularFonts[love.math.random(#regularFonts)]
+
+    return selected
 end
 
 function love.update(dt)
