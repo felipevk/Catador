@@ -144,7 +144,7 @@ function Play:new()
 
     self.gameMode = 0
 
-    self.timeTracker = self.area:addGameObject('TimeTracker', 0, 0, {play = self, modifiers = self.modifiers})
+    self.timeTracker = self.area:addGameObject('TimeTracker', gw * 0.95, gh, {play = self, modifiers = self.modifiers})
 
     self.score = self.area:addGameObject('Score', 0, 0, {play = self, modifiers = self.modifiers, timeTracker = self.timeTracker})
 

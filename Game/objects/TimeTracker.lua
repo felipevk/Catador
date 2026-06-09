@@ -37,12 +37,25 @@ function TimeTracker:update(dt)
     end
 end 
 
+-- each past second moves the images one height
+
 function TimeTracker:draw()
-    love.graphics.setColor(1, 0, 0, 1)
-    local demoFont = love.graphics.newFont(40)
-    love.graphics.setFont(demoFont)
-    printInsideRect("Time Left: " .. math.floor(self.timeLeft), demoFont, "topRight")
-    love.graphics.setColor(1, 1, 1, 1)
+    --love.graphics.setColor(1, 0, 0, 1)
+
+    local timeLeftInt = math.floor(self.timeLeft)
+    local totalTimeInt = math.floor(self.totalTime)
+
+    for i = 1, totalTimeInt do
+        local initialY = self.y - (sprites.sun:getHeight() * (i - 1))
+        local timeDisplacedY = initialY + ((self.totalTime - self.timeLeft ) * sprites.sun:getHeight()) - 50
+        love.graphics.draw(sprites.sun, self.x, timeDisplacedY, 0, 1, 1, sprites.sun:getWidth() / 2, sprites.sun:getHeight() / 2)
+    end
+
+    if debug then
+        love.graphics.setColor(1, 0, 0, 1)
+        draft:square(self.x, self.y, 30, 'fill')
+        love.graphics.setColor(1, 1, 1, 1)
+    end
 end
 
 function TimeTracker:destroy()

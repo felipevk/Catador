@@ -125,10 +125,6 @@ end
 function ShopOverlay:draw()
     if not self.showing then return end
 
-    local buttonRect = {x = self.buttonData.x, y = self.buttonData.y , w = self.buttonData.w, h = self.buttonData.h}
-
-    local buttonCenter = getCenter(buttonRect)
-
     love.graphics.setColor(unpack(self.backgroundColor))
     draft:rectangle(gw / 2, gh / 2, gw, gh, 'fill')
 
@@ -142,7 +138,18 @@ function ShopOverlay:draw()
         sprites.shopPanel:getHeight() / 2
     )
 
+    if self.selected ~= 0 then self:drawConfirmButton() end
+
+    for i = 1, #self.optionRect do
+        self:drawOption(self.optionRect[i], self.shopCharms[i], self.selected == i, self.optionsFonts[i])
+    end
+end
+
+function ShopOverlay:drawConfirmButton()
+    local buttonRect = {x = self.buttonData.x, y = self.buttonData.y , w = self.buttonData.w, h = self.buttonData.h}
+    local buttonCenter = getCenter(buttonRect)
     local buttonColor = (self.isHovered) and self.buttonData.hoveredColor or self.buttonData.color
+
     love.graphics.setColor(unpack(buttonColor))
     draft:rectangle(buttonCenter.x, buttonCenter.y , self.buttonData.w, self.buttonData.h, 'fill')
 
@@ -151,10 +158,6 @@ function ShopOverlay:draw()
     printInsideRect(self.buttonData.text, self.buttonFont, 'center', 0, buttonRect)
     
     love.graphics.setColor(1, 1, 1, 1)
-
-    for i = 1, #self.optionRect do
-        self:drawOption(self.optionRect[i], self.shopCharms[i], self.selected == i, self.optionsFonts[i])
-    end
 end
 
 function ShopOverlay:drawOption(rect, charmData, isSelected, font)
