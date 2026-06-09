@@ -24,10 +24,25 @@ function Play:new()
     }
 
     self.levelData = {
-        {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler'}},
-        {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'basket'}},
-        {mode = GameModes.ATTACK, goal = 2, time = 10, spawners = {'bowler', 'tennis', 'basket'}},
-        {mode = GameModes.DEFENSE, goal = 2, time = 10, spawners = {'bowler', 'bowler', 'bowler'}}
+        -- ATTACK
+        { 
+            { goal = 2, time = 10, spawners = {'tennis'} }, 
+            { goal = 2, time = 12, spawners = {'bowler', 'basket'} }, 
+            { goal = 4, time = 10, spawners = {'bowler', 'tennis', 'basket'} }, 
+            { goal = 6, time = 11, spawners = {'basket', 'tennis', 'bowler'} }, 
+            { goal = 6, time = 9, spawners = {'basket', 'tennis', 'bowler', 'bowler'} }, 
+            { goal = 8, time = 13, spawners = {'bowler', 'tennis', 'basket', 'tennis', 'bowler', 'bowler'} }
+        },
+       
+        -- DEFENSE
+        { 
+            { goal = 4, time = 10, spawners = {'bowler', 'basket'} }, 
+            { goal = 4, time = 10, spawners = {'bowler', 'bowler', 'bowler'} }, 
+            { goal = 5, time = 8, spawners = {'tennis', 'basket', 'tennis'} }, 
+            { goal = 6, time = 5, spawners = {'tennis', 'tennis', 'tennis'} }, 
+            { goal = 6, time = 10, spawners = {'basket', 'tennis', 'basket'} } , 
+            { goal = 5, time = 15, spawners = {'basket', 'tennis', 'basket', 'basket', 'bowler'} } 
+        }
     }
 
     self.collectableData = {
@@ -48,7 +63,8 @@ function Play:new()
         homing = false,
         increaseTimeWithScore = false, -- every X points increase time by 1 second
         split = false,
-        increaseTimeWithCollision = false
+        increaseTimeWithCollision = false,
+        modeSelectSpeed = 7000
     }
 
     self.effects = {
@@ -61,7 +77,8 @@ function Play:new()
         setHoming = function() self.modifiers.homing = true end,
         setIncreaseTimeWithScore = function() self.modifiers.increaseTimeWithScore = true end,
         setSplit = function() self.modifiers.split = true end,
-        setIncreaseTimeWithCollision = function() self.modifiers.increaseTimeWithCollision = true end
+        setIncreaseTimeWithCollision = function() self.modifiers.increaseTimeWithCollision = true end,
+        setSlowSelectSpeed = function() self.modifiers.modeSelectSpeed = 600 end
     }
 
     self.fxDescriptions = {
@@ -74,7 +91,8 @@ function Play:new()
         setHoming = 'Homing',
         setIncreaseTimeWithScore = 'Time on score',
         setSplit = 'Break things',
-        setIncreaseTimeWithCollision = 'Time on collision',
+        setIncreaseTimeWithCollision = 'Time on touch',
+        setSlowSelectSpeed = 'Better Life Choices'
     }
 
     self.charmData = {
@@ -95,8 +113,8 @@ function Play:new()
         },
         {
             name = 'Bless', sprite = sprites.charm4, color = colors.blue, 
-            descriptions = {self.fxDescriptions.increaseHands}, 
-            effects = {self.effects.increaseHands}
+            descriptions = {self.fxDescriptions.increaseHands, self.fxDescriptions.setSlowSelectSpeed}, 
+            effects = {self.effects.increaseHands, self.effects.setSlowSelectSpeed}
         },
         {
             name = 'Elder', sprite = sprites.charm5, color = colors.cyan, 
@@ -154,11 +172,18 @@ function Play:new()
 
     self.roundCompleteEffect = self.area:addGameObject('RoundCompleteEffect', 0, 0)
 
+    self.gameModeOverlay = self.area:addGameObject('GameModeOverlay', 0, 0)
+
     self.drop = nil
 
     self.current_level = 0
 
-    self:newLevel()
+    self.gameModeOverlay:show(self.modifiers.modeSelectSpeed,
+        function(selectedMode)
+            self.gameMode = selectedMode
+            self:newLevel()
+        end
+    )
 end
 
 function Play:getShopOptions()
@@ -207,18 +232,12 @@ function Play:newLevel()
 
     self.current_level = self.current_level + 1
 
-    local current_level_data = self.levelData[self.current_level]
+    local current_level_data = self.levelData[self.gameMode][self.current_level]
 
-    self.gameMode = current_level_data.mode
-
-    self.score:start(current_level_data.goal * self.modifiers.goalScoreMult)
+    self.score:show(current_level_data.goal * self.modifiers.goalScoreMult)
     self.timeTracker:start(current_level_data.time + self.modifiers.additionalTime)
 
     self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers, drop = self.drop, timeTracker = self.timeTracker})
-
-    if self.current_level > 1 then
-        self.roundCompleteEffect:hide(2.5)
-    end
 
     local dropPos = {
         {gw / 2, 150},
@@ -295,6 +314,8 @@ function Play:finishLevel(isWin)
     self.timeTracker:stop()
     self.drop:setActive(false)
 
+    self.score:hide()
+
     self.roundCompleteEffect:show(2.5, isWin)
 
     sounds.phoneRing:play()
@@ -307,7 +328,7 @@ function Play:finishLevel(isWin)
 end
 
 function Play:isLastLevel()
-    return self.current_level == #self.levelData
+    return self.current_level == #self.levelData[self.gameMode]
 end
 
 function Play:afterRoundComplete()
@@ -315,8 +336,24 @@ function Play:afterRoundComplete()
         self.area:addGameObject('GameFinishedEffect', 0, 0)
         self.timer:after(2, function() gotoRoom("Credits") end)
     else
-        self.shop:show(function() self:newLevel() end) 
+        sounds.main:setVolume(0.2)
+        sounds.main:setPitch(0.95)
+        self.shop:show(function() 
+            self:afterShop()
+        end) 
     end
+end
+
+function Play:afterShop()
+    self.gameModeOverlay:show(self.modifiers.modeSelectSpeed,
+        function(selectedMode)
+            sounds.main:setVolume(mainVolume)
+            sounds.main:setPitch(1)
+            self.roundCompleteEffect:hide(2.5)
+            self.gameMode = selectedMode
+            self:newLevel()
+        end
+    )
 end
 
 function Play:update(dt)
@@ -345,12 +382,7 @@ function Play:draw()
     love.graphics.clear()
     camera:attach(0, 0, gw, gh)
         self.area:draw()
-        love.graphics.setFont(self.demoFont)
-        local modeText = "Attack"
-        if self.gameMode == GameModes.DEFENSE then modeText = "Defense" end
-        love.graphics.setColor(1, 0, 0, 1)
-        printInsideRect(modeText, self.demoFont, "bottom")
-        love.graphics.setColor(1, 1, 1, 1)
+        --love.graphics.setFont(self.demoFont)
   	camera:detach()
     love.graphics.setCanvas()
     love.graphics.setColor(1, 1, 1, 1)

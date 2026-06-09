@@ -28,11 +28,6 @@ function Spawner:new(area, x, y, opts)
                 self:spawn()
             end)
 
-    --[[self.spawnForces = {
-        {100000, -50000},
-        {0, 100000}
-    }]]
-
     self.boundaries = {
         {100, 850},
         {100, 1500}

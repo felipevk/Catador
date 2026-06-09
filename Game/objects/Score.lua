@@ -6,11 +6,18 @@ function Score:new(area, x, y, opts)
     self.play = opts.play
     self.modifiers = opts.modifiers
     self.timeTracker = opts.timeTracker
+
+    self.showing = false
 end
 
-function Score:start(goal)
+function Score:show(goal)
     self.points = 0
     self.goal = goal * self.modifiers.goalScoreMult
+    self.showing = true
+end 
+
+function Score:hide()
+    self.showing = false
 end 
 
 function Score:update(dt)
@@ -18,6 +25,7 @@ function Score:update(dt)
 end 
 
 function Score:draw()
+    if not self.showing then return end
     love.graphics.setColor(1, 0, 0, 1)
     local demoFont = love.graphics.newFont(40)
     love.graphics.setFont(demoFont)
