@@ -61,6 +61,14 @@ function Score:add(points)
 
     self.timer:tween(0.5, self, {a = 1}, 'in-out-cubic')
 
+    if self.play.gameMode == GameModes.ATTACK then
+        sounds.score:play()
+    else
+        sounds.metal:play()
+    end
+
+    --self.timer:after(0.25, function() sounds.vortex:play() end)
+
     if self.points >= self.goal then
         self.play:finishLevel(self.play.gameMode == GameModes.ATTACK)
     end

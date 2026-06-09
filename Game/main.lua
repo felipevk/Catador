@@ -19,7 +19,7 @@ function love.load()
     camera = Camera()
     draft = Draft()
 
-    resize(0.8)
+    resize(0.5)
 
     GameObject = require("objects/GameObject")
 
@@ -70,11 +70,15 @@ function love.load()
         square = love.graphics.newImage("resources/sprites/square.jpg"),
         sun = love.graphics.newImage("resources/sprites/sun.png"),
         star = love.graphics.newImage("resources/sprites/star.png"),
+        trophy = love.graphics.newImage("resources/sprites/trophy.png"),
         notch = love.graphics.newImage("resources/sprites/notch.png")
     }
 
     sounds = {
         main = love.audio.newSource("resources/audio/Guifrog - Suco de Abacaxi.mp3", "stream"),
+        score = love.audio.newSource("resources/audio/ding.wav", "static"),
+        metal = love.audio.newSource("resources/audio/metal.wav", "static"),
+        cheer = love.audio.newSource("resources/audio/yaycheer.wav", "static"),
         phoneRing = love.audio.newSource("resources/audio/phoneRing1.mp3", "static")
     }
 
