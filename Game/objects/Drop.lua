@@ -6,6 +6,13 @@ function Drop:new(area, x, y, opts)
 
     self.gameMode = opts.gameMode
 
+    local dropPos = {
+        {gw / 2, 150},
+        {gw / 2, gh - 150}
+    }
+
+    self.x, self.y = dropPos[self.gameMode][1], dropPos[self.gameMode][2]
+
     self.modifiers = opts.modifiers
 
     self.sprite = opts.sprite

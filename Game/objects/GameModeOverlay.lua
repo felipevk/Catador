@@ -136,13 +136,13 @@ function GameModeOverlay:draw()
         sprites.shopPanel:getHeight() / 2
     )
 
-    love.graphics.setColor(unpack(colors.blue))
+    love.graphics.setColor(unpack(colors.red))
     draft:rectangle(gw / 2 - self.w / 2, gh / 2, self.w, self.h, 'fill')
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(self.attackFont)
     printInsideRect('Score Points', self.attackFont, 'top', 50, self.attackRect)
 
-    love.graphics.setColor(unpack(colors.red))
+    love.graphics.setColor(unpack(colors.blue))
     draft:rectangle(gw / 2 + self.w / 2, gh / 2, self.w, self.h, 'fill')
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(self.defendFont)

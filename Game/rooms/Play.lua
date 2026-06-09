@@ -26,7 +26,7 @@ function Play:new()
     self.levelData = {
         -- ATTACK
         { 
-            { goal = 2, time = 10, spawners = {'tennis'} }, 
+            { goal = 5, time = 10, spawners = {'tennis'} }, 
             { goal = 2, time = 12, spawners = {'bowler', 'basket'} }, 
             { goal = 4, time = 10, spawners = {'bowler', 'tennis', 'basket'} }, 
             { goal = 6, time = 11, spawners = {'basket', 'tennis', 'bowler'} }, 
@@ -36,7 +36,7 @@ function Play:new()
        
         -- DEFENSE
         { 
-            { goal = 4, time = 10, spawners = {'bowler', 'basket'} }, 
+            { goal = 5, time = 10, spawners = {'bowler', 'basket'} }, 
             { goal = 4, time = 10, spawners = {'bowler', 'bowler', 'bowler'} }, 
             { goal = 5, time = 8, spawners = {'tennis', 'basket', 'tennis'} }, 
             { goal = 6, time = 5, spawners = {'tennis', 'tennis', 'tennis'} }, 
@@ -164,7 +164,7 @@ function Play:new()
 
     self.timeTracker = self.area:addGameObject('TimeTracker', gw * 0.95, gh, {play = self, modifiers = self.modifiers})
 
-    self.score = self.area:addGameObject('Score', 0, 0, {play = self, modifiers = self.modifiers, timeTracker = self.timeTracker})
+    self.score = self.area:addGameObject('Score', 112, gh * 0.93, {play = self, modifiers = self.modifiers, timeTracker = self.timeTracker})
 
     self.shop = self.area:addGameObject('ShopOverlay', 0, 0, {play = self})
 
@@ -230,25 +230,13 @@ function Play:newLevel()
         )
     end
 
+    if self.drop ~= nil then self.drop:die() end
+
     self.current_level = self.current_level + 1
 
     local current_level_data = self.levelData[self.gameMode][self.current_level]
 
-    self.score:show(current_level_data.goal * self.modifiers.goalScoreMult)
-    self.timeTracker:start(current_level_data.time + self.modifiers.additionalTime)
-
-    self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers, drop = self.drop, timeTracker = self.timeTracker})
-
-    local dropPos = {
-        {gw / 2, 150},
-        {gw / 2, gh - 150}
-    }
-
-    local selectedPos = dropPos[self.gameMode]
-
-    if self.drop ~= nil then self.drop:die() end
-
-    self.drop = self.area:addGameObject('Drop', selectedPos[1], selectedPos[2], {
+    self.drop = self.area:addGameObject('Drop', 0, 0, {
         gameMode = self.gameMode, 
         sprite = sprites.drop, 
         w = 501, h = 235, 
@@ -256,6 +244,11 @@ function Play:newLevel()
         modifiers = self.modifiers
         })
     self.drop:setActive(true)
+
+    self.score:show(current_level_data.goal * self.modifiers.goalScoreMult)
+    self.timeTracker:start(current_level_data.time + self.modifiers.additionalTime)
+
+    self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers, drop = self.drop, timeTracker = self.timeTracker})
     
     local spawnerDepth = 10
     

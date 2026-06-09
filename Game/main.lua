@@ -68,7 +68,9 @@ function love.load()
         ptero = love.graphics.newImage("resources/sprites/ptero.png"),
         lizard = love.graphics.newImage("resources/sprites/lizard.png"),
         square = love.graphics.newImage("resources/sprites/square.jpg"),
-        sun = love.graphics.newImage("resources/sprites/sun.png")
+        sun = love.graphics.newImage("resources/sprites/sun.png"),
+        star = love.graphics.newImage("resources/sprites/star.png"),
+        notch = love.graphics.newImage("resources/sprites/notch.png")
     }
 
     sounds = {
