@@ -72,7 +72,8 @@ function love.load()
     }
 
     sounds = {
-        main = love.audio.newSource("resources/audio/Guifrog - Suco de Abacaxi.mp3", "stream")
+        main = love.audio.newSource("resources/audio/Guifrog - Suco de Abacaxi.mp3", "stream"),
+        phoneRing = love.audio.newSource("resources/audio/phoneRing1.mp3", "static")
     }
 
     fonts = {
@@ -124,9 +125,13 @@ function love.load()
         }
         ]])
 
+    mainVolume = 0.5
+
     sounds.main:setLooping(true)
-    sounds.main:setVolume(0.1)
+    sounds.main:setVolume(mainVolume)
     sounds.main:play()
+
+    sounds.phoneRing:setVolume(0.3)
 
     input:bind('left', 'left')
     input:bind('right', 'right')

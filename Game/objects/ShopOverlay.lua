@@ -68,7 +68,7 @@ function ShopOverlay:show(callback)
 
     self.optionsFonts = {getGameFont(), getGameFont()}
 
-    sounds.main:setVolume(0.02)
+    sounds.main:setVolume(0.2)
     sounds.main:setPitch(0.95)
 end
 
@@ -109,7 +109,7 @@ end
 function ShopOverlay:hide()
     self.showing = false
 
-    sounds.main:setVolume(0.1)
+    sounds.main:setVolume(mainVolume)
     sounds.main:setPitch(1)
 
     -- TODO move callback to end of transition

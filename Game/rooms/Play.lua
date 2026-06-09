@@ -297,6 +297,8 @@ function Play:finishLevel(isWin)
 
     self.roundCompleteEffect:show(2.5, isWin)
 
+    sounds.phoneRing:play()
+
     if isWin then
         self.timer:after(1.5, function() self:afterRoundComplete() end)
     else
