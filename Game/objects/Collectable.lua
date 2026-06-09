@@ -11,7 +11,7 @@ function Collectable:new(area, x, y, opts)
     self.sprite = opts.sprite
     self.colW, self.colH = opts.colW, opts.colH
 
-    self.depth = 50
+    self.depth = opts.depth
 
     self.collider = self.area.world:newRectangleCollider(
         self.x - self.colW / 2, 

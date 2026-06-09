@@ -34,6 +34,8 @@ function Spawner:new(area, x, y, opts)
     }
 
     self.axis = {'y', 'x'}
+
+    self.spawnedObjs = 1
 end
 
 function Spawner:spawn()
@@ -44,7 +46,8 @@ function Spawner:spawn()
         colW = randomCollectableData.w,
         colH = randomCollectableData.h,
         modifiers = self.modifiers,
-        drop = self.drop
+        drop = self.drop,
+        depth = self.depth + (self.spawnedObjs * 0.5)
     })
 
     -- I have no idea how this worked. This method should be called on the collider and not the gameobject
@@ -52,6 +55,8 @@ function Spawner:spawn()
     initialForce.x = initialForce[1]
     initialForce.y = initialForce[2]
     col.collider:setLinearVelocity(unpack(initialForce))
+
+    self.spawnedObjs = self.spawnedObjs + 1
 end
 
 function Spawner:update(dt)

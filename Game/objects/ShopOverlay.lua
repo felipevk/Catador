@@ -109,9 +109,6 @@ end
 function ShopOverlay:hide()
     self.showing = false
 
-    sounds.main:setVolume(mainVolume)
-    sounds.main:setPitch(1)
-
     -- TODO move callback to end of transition
     self.onTransitionOut()
 end

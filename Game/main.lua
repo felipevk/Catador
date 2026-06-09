@@ -19,7 +19,7 @@ function love.load()
     camera = Camera()
     draft = Draft()
 
-    resize(0.5)
+    resize(0.8)
 
     GameObject = require("objects/GameObject")
 
@@ -79,6 +79,8 @@ function love.load()
         score = love.audio.newSource("resources/audio/ding.wav", "static"),
         metal = love.audio.newSource("resources/audio/metal.wav", "static"),
         cheer = love.audio.newSource("resources/audio/yaycheer.wav", "static"),
+        breaking = love.audio.newSource("resources/audio/break.wav", "static"),
+        stick = love.audio.newSource("resources/audio/sticky.mp3", "static"),
         phoneRing = love.audio.newSource("resources/audio/phoneRing1.mp3", "static")
     }
 
@@ -89,7 +91,23 @@ function love.load()
         pixelatedElegance = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", 40),
         latinaPopular = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", 40),
         anotherTypewritter = love.graphics.newFont("resources/fonts/atwriter.ttf", 40),
-        vinqueAntique = love.graphics.newFont("resources/fonts/vinque antique bd.otf", 40)
+        vinqueAntique = love.graphics.newFont("resources/fonts/vinque antique bd.otf", 40),
+
+        angelicM = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", 80),
+        jogrungeM = love.graphics.newFont("resources/fonts/JOGRUNGE.otf", 80),
+        friendlySansM = love.graphics.newFont("resources/fonts/FriendlySans-Regular.ttf", 80),
+        pixelatedEleganceM = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", 80),
+        latinaPopularM = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", 80),
+        anotherTypewritterM = love.graphics.newFont("resources/fonts/atwriter.ttf", 80),
+        vinqueAntiqueM = love.graphics.newFont("resources/fonts/vinque antique bd.otf", 230),
+
+        angelicL = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", 100),
+        jogrungeL = love.graphics.newFont("resources/fonts/JOGRUNGE.otf", 100),
+        friendlySansL = love.graphics.newFont("resources/fonts/FriendlySans-Regular.ttf", 100),
+        pixelatedEleganceL = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", 100),
+        latinaPopularL = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", 100),
+        anotherTypewritterL = love.graphics.newFont("resources/fonts/atwriter.ttf", 100),
+        vinqueAntiqueL = love.graphics.newFont("resources/fonts/vinque antique bd.otf", 250)
     }
 
     colors = {

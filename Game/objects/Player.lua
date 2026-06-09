@@ -108,8 +108,8 @@ function Player:update(dt)
 end 
 
 function Player:stickToCollectable(collectableCol, handCol, handCenter)
+    sounds.stick:play()
     local collectable = collectableCol:getObject()
-    --print(collectable, collectableCol)
     local joint = love.physics.newRopeJoint(
         handCol.body,
         collectableCol.body,
@@ -128,6 +128,7 @@ function Player:stickToCollectable(collectableCol, handCol, handCenter)
 end
 
 function Player:splitCollectable(collectableCol)
+    sounds.breaking:play()
     local collectable = collectableCol:getObject()
     local spawnPos = { x = collectableCol:getX(), y = collectableCol:getY()}
     collectable:die()
@@ -143,7 +144,8 @@ function Player:splitCollectable(collectableCol)
             colW = 76,
             colH = 72,
             modifiers = self.modifiers,
-            drop = self.drop
+            drop = self.drop,
+            depth = 50 + (i * 0.5)
         })
         col:applyForce(unpack(spawnForces[i]))
         col.split = true
@@ -214,7 +216,7 @@ function Player:draw()
 
         if jointEntry.j and not jointEntry.j:isDestroyed() then
             local x1, y1, x2, y2 = jointEntry.j:getAnchors()
-            love.graphics.setColor(unpack(colors.orange))
+            love.graphics.setColor(unpack(colors.pink))
             love.graphics.setLineWidth(5)
             love.graphics.line(x1, y1, x2, y2)
         end

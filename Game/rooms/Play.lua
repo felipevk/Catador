@@ -27,21 +27,21 @@ function Play:new()
         -- ATTACK
         { 
             { goal = 2, time = 10, spawners = {'tennis'} }, 
-            --{ goal = 2, time = 12, spawners = {'bowler', 'basket'} }, 
-            --{ goal = 4, time = 10, spawners = {'bowler', 'tennis', 'basket'} }, 
-            --{ goal = 6, time = 11, spawners = {'basket', 'tennis', 'bowler'} }, 
-            --{ goal = 6, time = 9, spawners = {'basket', 'tennis', 'bowler', 'bowler'} }, 
-            --{ goal = 8, time = 13, spawners = {'bowler', 'tennis', 'basket', 'tennis', 'bowler', 'bowler'} }
+            { goal = 2, time = 12, spawners = {'bowler', 'basket'} }, 
+            { goal = 4, time = 10, spawners = {'bowler', 'tennis', 'basket'} }, 
+            { goal = 6, time = 11, spawners = {'basket', 'tennis', 'bowler'} }, 
+            { goal = 6, time = 9, spawners = {'basket', 'tennis', 'bowler', 'bowler'} }, 
+            { goal = 8, time = 13, spawners = {'bowler', 'tennis', 'basket', 'tennis', 'bowler', 'bowler'} }
         },
        
         -- DEFENSE
         { 
             { goal = 4, time = 10, spawners = {'bowler', 'basket'} }, 
-            --{ goal = 4, time = 10, spawners = {'bowler', 'bowler', 'bowler'} }, 
-            --{ goal = 5, time = 8, spawners = {'tennis', 'basket', 'tennis'} }, 
-           --{ goal = 6, time = 5, spawners = {'tennis', 'tennis', 'tennis'} }, 
-            --{ goal = 6, time = 10, spawners = {'basket', 'tennis', 'basket'} } , 
-            --{ goal = 5, time = 15, spawners = {'basket', 'tennis', 'basket', 'basket', 'bowler'} } 
+            { goal = 4, time = 10, spawners = {'bowler', 'bowler', 'bowler'} }, 
+            { goal = 5, time = 8, spawners = {'tennis', 'basket', 'tennis'} }, 
+            { goal = 6, time = 5, spawners = {'tennis', 'tennis', 'tennis'} }, 
+            { goal = 6, time = 10, spawners = {'basket', 'tennis', 'basket'} } , 
+            { goal = 5, time = 15, spawners = {'basket', 'tennis', 'basket', 'basket', 'bowler'} } 
         }
     }
 
@@ -188,7 +188,7 @@ end
 
 function Play:getShopOptions()
     local first = love.math.random(#self.availableCharms)
-    --local first = 3
+    --local first = 11
     local second = first
     --local second = 8
     while second == first do second = love.math.random(#self.availableCharms) end
@@ -329,8 +329,6 @@ function Play:afterRoundComplete()
         self.area:addGameObject('GameFinishedEffect', 0, 0)
         self.timer:after(2, function() gotoRoom("Credits") end)
     else
-        sounds.main:setVolume(0.2)
-        sounds.main:setPitch(0.95)
         self.shop:show(function() 
             self:afterShop()
         end) 
