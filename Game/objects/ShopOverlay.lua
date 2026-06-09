@@ -63,6 +63,10 @@ function ShopOverlay:show(callback)
     self.shopCharms = {self.play.charmData[self.shopIndexes[1]], self.play.charmData[self.shopIndexes[2]]}
 
     self.selected = 0
+
+    self.buttonFont = getGameFont()
+
+    self.optionsFonts = {getGameFont(), getGameFont()}
 end
 
 function ShopOverlay:update(dt)
@@ -128,9 +132,6 @@ function ShopOverlay:draw()
     love.graphics.setColor(unpack(self.backgroundColor))
     draft:rectangle(gw / 2, gh / 2, gw, gh, 'fill')
 
-    --love.graphics.setColor(unpack(self.panelColor))
-    --draft:rectangle(gw / 2, gh / 2, self.w , self.h, 'fill')
-
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(
         sprites.shopPanel, 
@@ -147,31 +148,21 @@ function ShopOverlay:draw()
 
     love.graphics.setColor(unpack(self.buttonData.textColor))
     
-    local demoFont = love.graphics.newFont(40)
-    love.graphics.setFont(demoFont)
-    printInsideRect(self.buttonData.text, demoFont, 'center', 0, buttonRect)
+    printInsideRect(self.buttonData.text, self.buttonFont, 'center', 0, buttonRect)
     
     love.graphics.setColor(1, 1, 1, 1)
 
     for i = 1, #self.optionRect do
-        self:drawOption(self.optionRect[i], self.shopCharms[i], self.selected == i)
+        self:drawOption(self.optionRect[i], self.shopCharms[i], self.selected == i, self.optionsFonts[i])
     end
 end
 
-function ShopOverlay:drawOption(rect, charmData, isSelected)
+function ShopOverlay:drawOption(rect, charmData, isSelected, font)
     local rectCenter = getCenter(rect)
     local startPadding = 20
 
     love.graphics.setColor({1.0,1.0,1.0,0.75})
     draft:rectangle(rectCenter.x, rectCenter.y , rect.w, rect.h, 'fill')
-    --[[love.graphics.draw(
-        sprites.fishPanel, 
-        rectCenter.x, rectCenter.y,
-        0, 
-        1, 1, 
-        sprites.fishPanel:getWidth() / 2, 
-        sprites.fishPanel:getHeight() / 2
-    )]]
 
     if isSelected then
         love.graphics.setColor(unpack(self.optionOutlineColor))
@@ -180,11 +171,10 @@ function ShopOverlay:drawOption(rect, charmData, isSelected)
         love.graphics.setLineWidth(1)
     end
 
-    local font = love.graphics.newFont(40)
-    love.graphics.setFont(font)
     love.graphics.setColor({0.0,0.0,0.0,1.0})
     local lineHeight = font:getHeight()
 
+    love.graphics.setFont(font)
     printInsideRect(charmData.name, font, 'top', startPadding, rect)
     
     love.graphics.setColor(unpack(charmData.color))

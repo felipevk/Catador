@@ -74,6 +74,10 @@ function love.load()
         main = love.audio.newSource("resources/audio/Guifrog - Suco de Abacaxi.mp3", "stream")
     }
 
+    fonts = {
+        angelic = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", 40)
+    }
+
     colors = {
         purple = {0.4784, 0.3333, 0.9255, 1.0}, -- 7a55ec
         red    = {0.9255, 0.3333, 0.3333, 1.0}, -- ec5555
@@ -141,6 +145,14 @@ function love.load()
     if debug then debugTools = DebugTools() end
 end
 
+function getGameFont()
+    if love.math.random() < 0.9 then
+        return love.graphics.newFont(40)
+    else
+        return fonts.angelic
+    end
+end
+
 function love.update(dt)
     timer:update(dt*slow_amount)
     camera:update(dt*slow_amount)
@@ -163,12 +175,10 @@ function love.draw()
         if flash_frames == -1 then flash_frames = nil end
     end
     if flash_frames then
-        love.graphics.setColor(1, 1, 1) --change to background color
+        love.graphics.setColor(flashColor) --change to background color
         love.graphics.rectangle('fill', 0, 0, sx*gw, sy*gh)
-        love.graphics.setColor(1, 1, 1)
+        love.graphics.setColor(1, 1, 1, 1)
     end
-
-    --love.graphics.setShader()
 
     if debug then debugTools:draw() end
 end
@@ -223,8 +233,9 @@ function slow(amount, duration)
     timer:tween('slow', duration, _G, {slow_amount = 1}, 'in-out-cubic')
 end
 
-function flash(frames)
+function flash(frames, color)
     flash_frames = frames
+    flashColor = color or {1,1,1,0.5}
 end
 
 function checkGC()

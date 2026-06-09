@@ -56,7 +56,6 @@ end
 function RoundCompleteEffect:draw()
     if not self.animating then return end
     for i, data in ipairs(self.squares) do
-        --if i > 5 then break end
         local size = data.s + self.a * 140
         local color = (i % 2 == 0) and self:getMainColor() or colors.orange
         if size < 0 then break end
@@ -68,9 +67,7 @@ function RoundCompleteEffect:draw()
             size, size, 
             self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
     end
-    --love.graphics.setColor(0,1,0,self.a)
-    --love.graphics.draw(sprites.bowler, self.x, self.y, 0, self.scale, self.scale, sprites.bowler:getWidth() / 2, sprites.bowler:getHeight() / 2)
-    love.graphics.setColor(1,1,1, 1)
+    love.graphics.setColor(1,1,1,1)
 end
 
 function RoundCompleteEffect:destroy()

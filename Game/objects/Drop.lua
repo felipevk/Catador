@@ -94,11 +94,6 @@ function Drop:update(dt)
         if not collectable.consumed then
             collectable:consume()
             self.score:add(self.modifiers.scoreMult)
-            --[[local aToB = { self.x - collider:getX(), self.y - collider:getY() }
-            local dir = getUnitVector(unpack(aToB))
-            local magnitude = 5000
-            collider:setLinearVelocity(0, 0)
-            collider:applyForce(dir.x * magnitude * collectable.colW, dir.y * magnitude * collectable.colH)]]
         end
     end
 end 

@@ -195,3 +195,8 @@ function getCenter(rect)
         y = rect.y + rect.h / 2
     }
 end
+
+-- by default colors are passed by reference
+function deepCopyColor(color)
+    return {color[1], color[2], color[3], color[4]}
+end

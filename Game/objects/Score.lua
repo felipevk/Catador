@@ -28,6 +28,11 @@ end
 function Score:add(points)
     self.points = self.points + points
 
+    local flashC = (self.play.gameMode == GameModes.ATTACK) and deepCopyColor(colors.green) or deepCopyColor(colors.red)
+    flashC[4] = 0.3
+    flash(8, flashC)
+    camera:shake(6, 80, 1.0)
+
     if self.points >= self.goal then
         self.play:finishLevel(self.play.gameMode == GameModes.ATTACK)
     end
