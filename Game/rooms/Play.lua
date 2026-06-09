@@ -341,7 +341,9 @@ function Play:draw()
         love.graphics.setFont(self.demoFont)
         local modeText = "Attack"
         if self.gameMode == GameModes.DEFENSE then modeText = "Defense" end
+        love.graphics.setColor(1, 0, 0, 1)
         printInsideRect(modeText, self.demoFont, "bottom")
+        love.graphics.setColor(1, 1, 1, 1)
   	camera:detach()
     love.graphics.setCanvas()
     love.graphics.setColor(1, 1, 1, 1)

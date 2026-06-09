@@ -38,9 +38,11 @@ function TimeTracker:update(dt)
 end 
 
 function TimeTracker:draw()
+    love.graphics.setColor(1, 0, 0, 1)
     local demoFont = love.graphics.newFont(40)
     love.graphics.setFont(demoFont)
     printInsideRect("Time Left: " .. math.floor(self.timeLeft), demoFont, "topRight")
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 function TimeTracker:destroy()

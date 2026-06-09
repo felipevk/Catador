@@ -18,9 +18,11 @@ function Score:update(dt)
 end 
 
 function Score:draw()
+    love.graphics.setColor(1, 0, 0, 1)
     local demoFont = love.graphics.newFont(40)
     love.graphics.setFont(demoFont)
     printInsideRect("Score: " .. self.points .. " / " .. self.goal, demoFont, "bottomLeft")
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 function Score:add(points)
