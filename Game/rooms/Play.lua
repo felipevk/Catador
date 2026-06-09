@@ -152,6 +152,8 @@ function Play:new()
 
     self.charmDisplay = self.area:addGameObject('CharmDisplay', gw * 0.9, 25, {})
 
+    self.roundCompleteEffect = self.area:addGameObject('RoundCompleteEffect', 0, 0)
+
     self.drop = nil
 
     self.current_level = 0
@@ -213,6 +215,10 @@ function Play:newLevel()
     self.timeTracker:start(current_level_data.time + self.modifiers.additionalTime)
 
     self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers, drop = self.drop, timeTracker = self.timeTracker})
+
+    if self.current_level > 1 then
+        self.roundCompleteEffect:hide(2.5)
+    end
 
     local dropPos = {
         {gw / 2, 150},
@@ -289,13 +295,12 @@ function Play:finishLevel(isWin)
     self.timeTracker:stop()
     self.drop:setActive(false)
 
+    self.roundCompleteEffect:show(2.5, isWin)
+
     if isWin then
-        -- TODO check if last level complete
-        self.area:addGameObject('RoundCompleteEffect', 0, 0)
-        self.timer:after(1, function() self:afterRoundComplete() end)
+        self.timer:after(1.5, function() self:afterRoundComplete() end)
     else
-        self.area:addGameObject('GameOverEffect', 0, 0)
-        self.timer:after(2, function() gotoRoom("Credits") end)
+        self.timer:after(3.5, function() gotoRoom("Credits") end)
     end
 end
 
