@@ -7,6 +7,8 @@ function TimeTracker:new(area, x, y, opts)
     self.timeLeft = 0
     self.totalTime = 0
     self.play = opts.play
+
+    self.s = 0.75
 end
 
 function TimeTracker:start(time)
@@ -46,9 +48,9 @@ function TimeTracker:draw()
     local totalTimeInt = math.floor(self.totalTime)
 
     for i = 1, totalTimeInt do
-        local initialY = self.y - (sprites.sun:getHeight() * (i - 1))
-        local timeDisplacedY = initialY + ((self.totalTime - self.timeLeft ) * sprites.sun:getHeight()) - 50
-        love.graphics.draw(sprites.sun, self.x, timeDisplacedY, 0, 1, 1, sprites.sun:getWidth() / 2, sprites.sun:getHeight() / 2)
+        local initialY = self.y - (sprites.sun:getHeight() * self.s * (i - 1))
+        local timeDisplacedY = initialY + ((self.totalTime - self.timeLeft ) * sprites.sun:getHeight() * self.s) - 40
+        love.graphics.draw(sprites.sun, self.x, timeDisplacedY, 0, self.s, self.s, sprites.sun:getWidth() * self.s / 2, sprites.sun:getHeight() * self.s / 2)
     end
 
     if debug then

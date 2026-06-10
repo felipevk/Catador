@@ -26,11 +26,11 @@ function Play:new()
     self.levelData = {
         -- ATTACK
         { 
-            { goal = 2, time = 10, spawners = {'tennis'} }, 
-            { goal = 2, time = 12, spawners = {'bowler', 'basket'} }, 
-            { goal = 4, time = 10, spawners = {'bowler', 'tennis', 'basket'} }, 
-            { goal = 6, time = 11, spawners = {'basket', 'tennis', 'bowler'} }, 
-            { goal = 6, time = 9, spawners = {'basket', 'tennis', 'bowler', 'bowler'} }, 
+            { goal = 2, time = 20, spawners = {'tennis'} }, 
+            { goal = 2, time = 20, spawners = {'bowler', 'basket'} }, 
+            { goal = 4, time = 15, spawners = {'bowler', 'tennis', 'basket'} }, 
+            { goal = 6, time = 15, spawners = {'basket', 'tennis', 'bowler'} }, 
+            { goal = 6, time = 13, spawners = {'basket', 'tennis', 'bowler', 'bowler'} }, 
             { goal = 8, time = 13, spawners = {'bowler', 'tennis', 'basket', 'tennis', 'bowler', 'bowler'} }
         },
        

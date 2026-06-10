@@ -4,8 +4,8 @@ gh = 1080
 -- do not change these directly, use the resize method instead
 sx = 1
 sy = 1
-debug = true
-drawCol = true
+debug = false
+drawCol = false
 useShader = true
 
 
