@@ -24,6 +24,8 @@ end
 function TimeTracker:addTime(amount)
     self.totalTime = self.totalTime + amount
     self.timeLeft = self.timeLeft + amount
+
+    sounds.clock:play()
 end
 
 function TimeTracker:update(dt)

@@ -7,6 +7,8 @@ function Player:new(area, x, y, opts)
     self.drop = opts.drop
     self.timeTracker = opts.timeTracker
 
+    self.timer = Timer()
+
     self.depth = 100
 
     self.handData = {
@@ -37,10 +39,15 @@ function Player:new(area, x, y, opts)
     end
 
     self.isClick = false
+
+    self.addTimeCooldown = 0.8
+    self.isAddTime = false
 end
 
 function Player:update(dt)
     Player.super.update(self, dt)
+
+    if self.timer then self.timer:update(dt) end
 
     local clicking = input:down('click') == true
 
@@ -83,8 +90,13 @@ function Player:update(dt)
         for _, collectableCol in ipairs(hits) do
             local collectable = collectableCol:getObject()
 
-            if self.modifiers.increaseTimeWithCollision and not collectable.consumed then
-                self.timeTracker:addTime(0.06)
+            if self.modifiers.increaseTimeWithCollision and not self.isAddTime and not collectable.consumed then
+                self.timeTracker:addTime(0.6)
+                self.area:addGameObject('AddTimeEffect', collectable.x, collectable.y, {
+                    duration = 1.0, speed = 300, h = 30, color = colors.red, min = 1, max = 2
+                })
+                self.isAddTime = true
+                self.timer:after(self.addTimeCooldown, function() self.isAddTime = false end)
             end
 
             if self.modifiers.split and not collectable.consumed and not collectable.split and not collectable.dead then

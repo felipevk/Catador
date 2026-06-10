@@ -11,7 +11,7 @@ function Credits:new()
         { "Catador" },
         { "Pedro Kauati - Programmer" },
         { 
-            "With Free use assets from",
+            "With free use assets from",
             "1001fonts",
             "heritagetype",
             "rawpixel",

@@ -81,6 +81,7 @@ function love.load()
         cheer = love.audio.newSource("resources/audio/yaycheer.wav", "static"),
         breaking = love.audio.newSource("resources/audio/break.wav", "static"),
         stick = love.audio.newSource("resources/audio/sticky.mp3", "static"),
+        clock = love.audio.newSource("resources/audio/clock.wav", "static"),
         phoneRing = love.audio.newSource("resources/audio/phoneRing1.mp3", "static")
     }
 

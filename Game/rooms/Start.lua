@@ -36,13 +36,6 @@ function Start:new()
         fonts.anotherTypewritterL,
         fonts.vinqueAntiqueL
     }
-
-    self.timer:every(2,
-            function()
-                self.area:addGameObject('CollisionEffect', gw / 2, gh / 2 - 300, {
-                    duration = 0.5, speed = 300, height = 20, color = colors.red, min = 10, max = 20
-                })
-            end)
 end
 
 function Start:update(dt)
