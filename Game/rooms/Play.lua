@@ -184,6 +184,8 @@ function Play:new()
             self:newLevel()
         end
     )
+
+    self.isGameOver = false
 end
 
 function Play:getShopOptions()
@@ -316,7 +318,12 @@ function Play:finishLevel(isWin)
     if isWin then
         self.timer:after(1.5, function() self:afterRoundComplete() end)
     else
-        self.timer:after(3.5, function() gotoRoom("Credits") end)
+        self.timer:after(3.5, 
+        function() 
+            collectgarbage()
+            self.isGameOver = true 
+            gotoRoom("Credits") 
+        end)
     end
 end
 
@@ -325,9 +332,10 @@ function Play:isLastLevel()
 end
 
 function Play:afterRoundComplete()
+    collectgarbage()
     if self:isLastLevel() then
         self.area:addGameObject('GameFinishedEffect', 0, 0)
-        self.timer:after(2, function() gotoRoom("Credits") end)
+        self.timer:after(2, function()  self.isGameOver = true gotoRoom("Credits") end)
     else
         self.shop:show(function() 
             self:afterShop()
@@ -353,6 +361,8 @@ function Play:update(dt)
     camera:lockPosition(dt, gw/2, gh/2)
 
     if self.timer then self.timer:update(dt) end
+
+    if self.isGameOver then return end
     
     self.area:update(dt)
 
@@ -381,6 +391,15 @@ function Play:draw()
     love.graphics.draw(self.room_canvas, 0, 0, 0, sx, sy)
     love.graphics.setShader()
     love.graphics.setBlendMode('alpha')
+end
+
+function Play:destroy()
+    self.area:destroy()
+    self.area = nil
+    self.drop = nil
+    self.player = nil
+    self.score = nil
+    self.timeTracker = nil
 end
 
 return Play

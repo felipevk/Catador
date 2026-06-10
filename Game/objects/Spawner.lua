@@ -36,6 +36,8 @@ function Spawner:new(area, x, y, opts)
     self.axis = {'y', 'x'}
 
     self.spawnedObjs = 1
+
+    self.sound = sounds.spawn:clone()
 end
 
 function Spawner:spawn()
@@ -57,6 +59,8 @@ function Spawner:spawn()
     col.collider:setLinearVelocity(unpack(initialForce))
 
     self.spawnedObjs = self.spawnedObjs + 1
+
+    self.sound:play()
 end
 
 function Spawner:update(dt)
@@ -101,6 +105,8 @@ end
 
 function Spawner:destroy()
    Spawner.super.destroy(self)
+
+   self.sound = nil
 end
 
 return Spawner

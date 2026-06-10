@@ -82,6 +82,7 @@ function love.load()
         breaking = love.audio.newSource("resources/audio/break.wav", "static"),
         stick = love.audio.newSource("resources/audio/sticky.mp3", "static"),
         clock = love.audio.newSource("resources/audio/clock.wav", "static"),
+        spawn = love.audio.newSource("resources/audio/tennisServe.wav", "static"),
         phoneRing = love.audio.newSource("resources/audio/phoneRing1.mp3", "static")
     }
 
@@ -177,9 +178,11 @@ function love.load()
     input:bind('escape', 'exit')
     input:bind('e', 'autowin')
 
+    AddTestShortcuts()
+
     gotoRoom("Start")
 
-    if debug then debugTools = DebugTools() end
+    debugTools = DebugTools()
 end
 
 function getGameFont()

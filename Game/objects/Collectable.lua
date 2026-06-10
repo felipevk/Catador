@@ -96,7 +96,7 @@ function Collectable:die()
 end
 
 function Collectable:destroy()
-   Collectable.super.destroy(self)
+    Collectable.super.destroy(self)
 end
 
 return Collectable

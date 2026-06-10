@@ -23,7 +23,8 @@ function RoundCompleteEffect:new(area, x, y, opts)
             s =  -0.5 * i,
             r =  (i / self.count) * math.pi,
             x = gw + (self.count * (i - 1)),
-            y = gh + (self.count * (i - 1))
+            y = gh + (self.count * (i - 1)),
+            color = colors.purple
             --x = gw / 2,
             --y = gh  / 2
         }
@@ -37,6 +38,9 @@ end
 function RoundCompleteEffect:show(duration, isWin)
     self.animating = true
     self.win = isWin
+    for i, data in ipairs(self.squares) do
+        data.color = (i % 2 == 0) and self:getMainColor() or colors.orange
+    end
     self.timer:tween(duration, self, {a = 1}, 'in-out-cubic')
 end 
 
@@ -57,9 +61,8 @@ function RoundCompleteEffect:draw()
     if not self.animating then return end
     for i, data in ipairs(self.squares) do
         local size = data.s + self.a * 140
-        local color = (i % 2 == 0) and self:getMainColor() or colors.orange
         if size < 0 then break end
-        love.graphics.setColor(unpack(color))
+        love.graphics.setColor(unpack(data.color))
         love.graphics.draw(
             self.sprite, 
             data.x - self.a * gw / 2 * 1, data.y - self.a * gh / 2 * 1, 
