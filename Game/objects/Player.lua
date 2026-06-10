@@ -120,11 +120,13 @@ function Player:stickToCollectable(collectableCol, handCol, handCenter)
     )
     local newId = UUID()
     table.insert(self.joints, {idx = newId, j = joint, attached = collectable})
-
-    --print('Created joint with id '.. newId)
-    --print(self.joints, #self.joints)
     
     collectable.isAttached = true
+
+    self.area:addGameObject('CollisionEffect', collectableCol:getX(), collectableCol:getY(), {
+        duration = 0.5, speed = 300, height = 10, color = colors.pink, min = 5, max = 10
+    })
+
 end
 
 function Player:splitCollectable(collectableCol)
@@ -150,6 +152,12 @@ function Player:splitCollectable(collectableCol)
         col:applyForce(unpack(spawnForces[i]))
         col.split = true
     end
+
+    self.area:addGameObject('CollisionEffect',spawnPos.x, spawnPos.y, {
+        duration = 0.5, speed = 300, height = 10, color = colors.red, min = 10, max = 15
+    })
+
+    camera:shake(6, 80, 0.3)
 end
 
 function Player:hasUsedJointID(id)

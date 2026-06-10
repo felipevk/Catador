@@ -187,7 +187,7 @@ function Play:new()
 end
 
 function Play:getShopOptions()
-    local first = love.math.random(#self.availableCharms)
+    local first = forceCharm or love.math.random(#self.availableCharms)
     --local first = 11
     local second = first
     --local second = 8
