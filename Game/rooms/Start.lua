@@ -50,6 +50,10 @@ function Start:update(dt)
     if input:pressed('click') then
         self:transitionOut()
     end
+
+    if input:pressed('exit') then
+        love.event.quit()
+    end
 end
 
 function Start:transitionOut()

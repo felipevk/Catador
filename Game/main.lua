@@ -176,7 +176,10 @@ function love.load()
 
     input:bind('mouse1', 'click')
     input:bind('escape', 'exit')
-    input:bind('e', 'autowin')
+
+    if debug then
+        input:bind('e', 'autowin')
+    end
 
     AddTestShortcuts()
 
