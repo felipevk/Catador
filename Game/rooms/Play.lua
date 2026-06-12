@@ -370,7 +370,7 @@ function Play:update(dt)
         gotoRoom("Credits")
     end
 
-    if input:pressed('autowin') then
+    if debug and input:pressed('autowin') then
         self:finishLevel(true)
     end
 end
