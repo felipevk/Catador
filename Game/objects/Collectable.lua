@@ -35,13 +35,18 @@ function Collectable:new(area, x, y, opts)
     if self.modifiers.homing then
         self.timer:every(1,
             function()
+                self.recordTrail = true
                 local aToB = { self.drop.x - self.x, self.drop.y - self.y }
                 local dir = getUnitVector(unpack(aToB))
                 local magnitude = 100000
-                --print(self.drop)
                 self.collider:applyForce(dir.x * magnitude * self.colW, dir.y * magnitude * self.colH)
+                self.timer:after(0.3, function() self.recordTrail = true end)
             end)
     end
+
+    self.trail = {}
+    self.recordTrail = false
+    self.trailMax = 10
 end
 
 function Collectable:consume()
@@ -80,15 +85,36 @@ function Collectable:update(dt)
         self.collider:setLinearVelocity(dir.x * magnitude * self.colW, dir.y * magnitude * self.colH)
         return
     end
+
+    if #self.trail > self.trailMax then
+        table.remove(self.trail, 1)
+    end
+
+    if self.recordTrail then
+        table.insert(self.trail, {self.x, self.y})
+    end
 end 
 
 function Collectable:draw()
+    love.graphics.setColor(unpack(colors.red))
+
+    if not consumed then
+        for i, v in ipairs(self.trail) do
+            local r = 4 * i
+            draft:circle(v[1], v[2], r, 20, 'fill')
+        end
+    end
+
+    love.graphics.setColor(1, 1, 1, 1)
+
     love.graphics.draw(self.sprite, self.collider:getX(), self.collider:getY(), self.collider:getAngle(), self.s, self.s, self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
+   
     if debug then
         if self.split then love.graphics.setColor(0, 0, 0.8, 1)  else love.graphics.setColor(1, 0, 0, 1) end
         draft:square(self.collider:getX(), self.collider:getY(), 30, 'fill')
         love.graphics.setColor(1, 1, 1, 1)
     end
+    
 end
 
 function Collectable:die()

@@ -7,7 +7,7 @@ sy = 1
 debug = false
 drawCol = false
 useShader = true
---forceCharm = 3
+--forceCharm = 9
 
 
 function love.conf(t)

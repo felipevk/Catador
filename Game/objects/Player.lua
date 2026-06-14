@@ -49,12 +49,6 @@ function Player:update(dt)
 
     if self.timer then self.timer:update(dt) end
 
-    local clicking = input:down('click') == true
-
-    if clicking ~= self.isClick then
-        self:ToggleClick(clicking)
-    end
-
     self.x = love.mouse.getX() / sx
     self.y = love.mouse.getY() / sy
 
