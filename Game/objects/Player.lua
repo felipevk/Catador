@@ -44,13 +44,21 @@ function Player:new(area, x, y, opts)
     self.isAddTime = false
 
     self.attractRange = 150 / ( self.handCount * 0.5 )
-    self.attractForce = 2
+    self.attractForce = 10
+
+    self.r = 0
+    self.rotateSpeed = 0
+    if opts.modifiers.attract then
+        self.rotateSpeed = 10
+    end
 end
 
 function Player:update(dt)
     Player.super.update(self, dt)
 
     if self.timer then self.timer:update(dt) end
+
+    self.r = self.r + self.rotateSpeed * dt
 
     self.x = love.mouse.getX() / sx
     self.y = love.mouse.getY() / sy
@@ -266,23 +274,20 @@ function Player:draw()
         local spriteData = self.handData[i].sprite
 
         if self.modifiers.attract then
-            local fieldColor = deepCopyColor(colors.green)
-            fieldColor[4] = 0.4
-            love.graphics.setColor(unpack(fieldColor))
-            love.graphics.circle(
-                "fill",
-                self.x + spriteData.position.x,
-                self.y + spriteData.position.y,
-                self.attractRange
-            )
-            fieldColor[4] = 0.6
-            love.graphics.setColor(unpack(fieldColor))
-            love.graphics.circle(
-                "fill",
-                self.x + spriteData.position.x,
-                self.y + spriteData.position.y,
-                self.attractRange * 0.5
-            )
+            local fieldColor = deepCopyColor(colors.purple)
+            local circleCount = 8
+
+            for i = 0, circleCount do
+                local radius = self.attractRange * (1 - (i / circleCount))
+                fieldColor[4] = 0.2 + (i / circleCount) * 0.4
+                love.graphics.setColor(unpack(fieldColor))
+                love.graphics.circle(
+                    "fill",
+                    self.x + spriteData.position.x,
+                    self.y + spriteData.position.y,
+                    radius
+                )
+            end
             love.graphics.setColor(1, 1, 1, 1)
         end
         
@@ -290,7 +295,7 @@ function Player:draw()
             spriteData.asset, 
             self.x + spriteData.position.x, 
             self.y + spriteData.position.y, 
-            0, nil, nil, 
+            self.r, nil, nil,
             spriteData.asset:getWidth() / 2, 
             spriteData.asset:getHeight() / 2)
     end

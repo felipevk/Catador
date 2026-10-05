@@ -74,6 +74,9 @@ function Score:add(points)
     end
 
     if self.modifiers.increaseTimeWithScore then
+        self.area:addGameObject('AddTimeEffect', self.play.drop.x, self.play.drop.y, {
+            duration = 1.0, speed = 300, h = 30, color = colors.red, min = 1, max = 2
+        })
         if points >= 1 then self.timeTracker:addTime(2) end
     end
 end
