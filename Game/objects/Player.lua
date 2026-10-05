@@ -71,8 +71,8 @@ function Player:update(dt)
         if not self.modifiers.sticky and not self.modifiers.split and not self.modifiers.increaseTimeWithCollision then goto continue end
 
         local rect = {
-            x = x - w / 2,
-            y = y - h / 2,
+            x = handOffsetX - w / 2,
+            y = handOffsetY - h / 2,
             w = w,
             h = h
         }
@@ -247,11 +247,13 @@ function Player:die()
 end
 
 function Player:destroy()
-   Player.super.destroy(self)
+    print("player colliders destroyed")
 
-   for _, collider in ipairs(self.colliders) do
-    collider:destroy()
-   end
+    Player.super.destroy(self)
+
+    for _, collider in ipairs(self.colliders) do
+        collider:destroy()
+    end
 end
 
 return Player
