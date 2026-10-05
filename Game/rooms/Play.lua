@@ -78,7 +78,9 @@ function Play:new()
         setIncreaseTimeWithScore = function() self.modifiers.increaseTimeWithScore = true end,
         setSplit = function() self.modifiers.split = true end,
         setIncreaseTimeWithCollision = function() self.modifiers.increaseTimeWithCollision = true end,
-        setSlowSelectSpeed = function() self.modifiers.modeSelectSpeed = 600 end
+        setSlowSelectSpeed = function() self.modifiers.modeSelectSpeed = 600 end,
+        setJumbo = function() self.modifiers.jumbo = true end,
+        setMini = function() self.modifiers.mini = true end,
     }
 
     self.fxDescriptions = {
@@ -92,7 +94,9 @@ function Play:new()
         setIncreaseTimeWithScore = 'Time on score',
         setSplit = 'Break things',
         setIncreaseTimeWithCollision = 'Time on touch',
-        setSlowSelectSpeed = 'Better Life Choices'
+        setSlowSelectSpeed = 'Better Life Choices',
+        setJumbo = 'Big Stuff',
+        setMini = 'Small Stuff'
     }
 
     self.charmData = {
@@ -103,13 +107,13 @@ function Play:new()
         },
         {
             name = 'Face', sprite = sprites.charm2, color = colors.red, 
-            descriptions = {self.fxDescriptions.increaseHands}, 
-            effects = {self.effects.increaseHands}
+            descriptions = {self.fxDescriptions.increaseHands, self.fxDescriptions.setMini}, 
+            effects = {self.effects.increaseHands, self.effects.setMini}
         },
         {
             name = 'Mill', sprite = sprites.charm3, color = colors.pink, 
-            descriptions = {self.fxDescriptions.setIncreaseTimeWithCollision}, 
-            effects = {self.effects.setIncreaseTimeWithCollision}
+            descriptions = {self.fxDescriptions.setJumbo}, 
+            effects = {self.effects.setJumbo}
         },
         {
             name = 'Bless', sprite = sprites.charm4, color = colors.blue, 

@@ -247,8 +247,6 @@ function Player:die()
 end
 
 function Player:destroy()
-    print("player colliders destroyed")
-
     Player.super.destroy(self)
 
     for _, collider in ipairs(self.colliders) do

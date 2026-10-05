@@ -6,10 +6,22 @@ function Collectable:new(area, x, y, opts)
 
     self.modifiers = opts.modifiers
 
+    local sizes = {1,1,1}
+
+    if self.modifiers.jumbo then
+        table.insert(sizes, 2)
+    end
+
+    if self.modifiers.mini then
+        table.insert(sizes, 0.5)
+    end
+
+    self.s = sizes[love.math.random(#sizes)]
+
     self.drop = opts.drop
 
     self.sprite = opts.sprite
-    self.colW, self.colH = opts.colW, opts.colH
+    self.colW, self.colH = opts.colW * self.s, opts.colH * self.s
 
     self.depth = opts.depth
 
@@ -23,11 +35,11 @@ function Collectable:new(area, x, y, opts)
     self.collider:setObject(self)
     self.collider:setFixedRotation(false)
     self.collider:setSleepingAllowed(false)
+    self.collider:setRestitution(0)
     if self.modifiers.bouncy then self.collider:setRestitution(0.8) end
 
     self.consumed = false
     self.out = false
-    self.s = 1
     self.isAttached = false
     self.jointID = -1
     self.split = false
@@ -76,6 +88,10 @@ end
 
 function Collectable:update(dt)
     Collectable.super.update(self, dt)
+
+    if self.collider:enter('Player') then
+        --self.collider:setLinearDamping(5)
+    end
 
     if self.consumed then
         local aToB = { self.drop.x - self.x, self.drop.y - self.y }
