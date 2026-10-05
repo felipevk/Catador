@@ -42,6 +42,9 @@ function Player:new(area, x, y, opts)
 
     self.addTimeCooldown = 0.8
     self.isAddTime = false
+
+    self.attractRange = 150 / ( self.handCount * 0.5 )
+    self.attractForce = 2
 end
 
 function Player:update(dt)
@@ -63,7 +66,49 @@ function Player:update(dt)
         local vx = (handOffsetX - colX) / dt
         local vy = (handOffsetY - colY) / dt
 
-        handCol:setLinearVelocity(vx, vy)
+        handCol:setLinearVelocity(vx, vy)        
+
+        if self.modifiers.attract then
+            local inRange = self.area.world:queryCircleArea(
+                handOffsetX,
+                handOffsetY,
+                self.attractRange,
+                { "Collectable" }
+            )
+
+            for _, collider in ipairs(inRange) do
+                local vx, vy = collider:getLinearVelocity()
+                local colX, colY = collider:getPosition()
+
+                local speed = getVectorMagnitude(vx, vy)
+
+                local dx, dy = handOffsetX - colX, handOffsetY - colY
+                local length = getVectorMagnitude(dx, dy)
+
+                if length > 0 and speed > 0 then
+                    dx = dx / length
+                    dy = dy / length
+
+                    local desiredVx = dx * speed * self.attractForce
+                    local desiredVy = dy * speed * self.attractForce
+
+                    local steering = 2
+
+                    vx = vx + (desiredVx - vx) * steering * dt
+                    vy = vy + (desiredVy - vy) * steering * dt
+
+                    -- normalize again so steering doesn't accidentally change speed
+                    local newSpeed = getVectorMagnitude(vx, vy)
+
+                    if newSpeed > 0 then
+                        vx = vx / newSpeed * speed
+                        vy = vy / newSpeed * speed
+                    end
+
+                    collider:setLinearVelocity(vx, vy)
+                end
+            end
+        end
 
         local w = self.handData[i].collider.w
         local h = self.handData[i].collider.h
@@ -219,6 +264,28 @@ function Player:draw()
     love.graphics.setColor(1, 1, 1, self.isClick and 0.5 or 1)
     for i = 1, self.handCount do
         local spriteData = self.handData[i].sprite
+
+        if self.modifiers.attract then
+            local fieldColor = deepCopyColor(colors.green)
+            fieldColor[4] = 0.4
+            love.graphics.setColor(unpack(fieldColor))
+            love.graphics.circle(
+                "fill",
+                self.x + spriteData.position.x,
+                self.y + spriteData.position.y,
+                self.attractRange
+            )
+            fieldColor[4] = 0.6
+            love.graphics.setColor(unpack(fieldColor))
+            love.graphics.circle(
+                "fill",
+                self.x + spriteData.position.x,
+                self.y + spriteData.position.y,
+                self.attractRange * 0.5
+            )
+            love.graphics.setColor(1, 1, 1, 1)
+        end
+        
         love.graphics.draw(
             spriteData.asset, 
             self.x + spriteData.position.x, 

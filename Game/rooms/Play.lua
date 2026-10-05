@@ -81,6 +81,7 @@ function Play:new()
         setSlowSelectSpeed = function() self.modifiers.modeSelectSpeed = 600 end,
         setJumbo = function() self.modifiers.jumbo = true end,
         setMini = function() self.modifiers.mini = true end,
+        setAttract = function() self.modifiers.attract = true end,
     }
 
     self.fxDescriptions = {
@@ -96,7 +97,8 @@ function Play:new()
         setIncreaseTimeWithCollision = 'Time on touch',
         setSlowSelectSpeed = 'Better Life Choices',
         setJumbo = 'Big Stuff',
-        setMini = 'Small Stuff'
+        setMini = 'Small Stuff',
+        setAttract = 'Gravitational Hands'
     }
 
     self.charmData = {
@@ -122,8 +124,8 @@ function Play:new()
         },
         {
             name = 'Elder', sprite = sprites.charm5, color = colors.cyan, 
-            descriptions = {self.fxDescriptions.increaseTime}, 
-            effects = {self.effects.increaseTime}
+            descriptions = { self.fxDescriptions.increaseTime, self.fxDescriptions.setAttract},
+            effects = { self.effects.increaseTime, self.effects.setAttract}
         },
         {
             name = 'Graveyard', sprite = sprites.charm6, color = colors.green, 
