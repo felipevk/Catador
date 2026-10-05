@@ -55,15 +55,20 @@ function Player:update(dt)
     for i = 1, self.handCount do
         local handCol = self.colliders[i]
 
-        local x = self.x + self.handData[i].collider.x
-        local y = self.y + self.handData[i].collider.y
+        local handOffsetX = self.x + self.handData[i].collider.x
+        local handOffsetY = self.y + self.handData[i].collider.y
+
+        local colX, colY = handCol:getPosition()
+
+        local vx = (handOffsetX - colX) / dt
+        local vy = (handOffsetY - colY) / dt
+
+        handCol:setLinearVelocity(vx, vy)
+
         local w = self.handData[i].collider.w
         local h = self.handData[i].collider.h
 
-        handCol:setX(x)
-        handCol:setY(y)
-
-        if not self.modifiers.sticky and not self.modifiers.split and not self.modifiers.increaseTimeWithCollision then break end
+        if not self.modifiers.sticky and not self.modifiers.split and not self.modifiers.increaseTimeWithCollision then goto continue end
 
         local rect = {
             x = x - w / 2,
@@ -103,6 +108,7 @@ function Player:update(dt)
             end
         end
 
+        ::continue::
     end
 
     for i = #self.joints, 1, -1 do
@@ -220,9 +226,6 @@ function Player:draw()
             0, nil, nil, 
             spriteData.asset:getWidth() / 2, 
             spriteData.asset:getHeight() / 2)
-
-        self.colliders[i]:setX(self.x + self.handData[i].collider.x)
-        self.colliders[i]:setY(self.y + self.handData[i].collider.y)
     end
     
     for i, jointEntry in ipairs(self.joints) do
