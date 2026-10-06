@@ -21,7 +21,12 @@ function Spawner:new(area, x, y, opts)
 
     self.out = false
 
-    self.s = 1
+    self.special = opts.special
+
+    self.s = 0.8
+    if self.special then
+        self.s = 1.2
+    end
 
     self.spawnRoutine = self.timer:every(opts.timeToSpawn,
             function()
@@ -77,7 +82,12 @@ function Spawner:update(dt)
 end 
 
 function Spawner:draw()
+    if self.special then
+        local specialColor = deepCopyColor(colors.orange)
+        love.graphics.setColor(specialColor)
+    end
     love.graphics.draw(self.sprite, self.x, self.y, 0, self.s, self.s, self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
+    love.graphics.setColor(1, 1, 1, 1)
     if debug then
         love.graphics.setColor(1, 0, 0, 1)
         draft:square(self.x, self.y, 30, 'fill')

@@ -71,7 +71,9 @@ function love.load()
         sun = love.graphics.newImage("resources/sprites/sun.png"),
         star = love.graphics.newImage("resources/sprites/star.png"),
         trophy = love.graphics.newImage("resources/sprites/trophy.png"),
-        notch = love.graphics.newImage("resources/sprites/notch.png")
+        notch = love.graphics.newImage("resources/sprites/notch.png"),
+        golfer = love.graphics.newImage("resources/sprites/golfer.png"),
+        lacross = love.graphics.newImage("resources/sprites/lacross.png")
     }
 
     sounds = {
@@ -154,6 +156,76 @@ function love.load()
             pixel.rgb *= 0.85 + 0.15 * scanline;
 
             return pixel * color;
+        }
+        ]])
+
+    shaders.gField = love.graphics.newShader([[
+        extern number time;
+
+        float hash(vec2 p)
+        {
+            return fract(
+                sin(dot(p, vec2(127.1, 311.7))) *
+                43758.5453
+            );
+        }
+
+        vec4 effect(
+            vec4 color,
+            Image texture,
+            vec2 textureCoords,
+            vec2 screenCoords
+        )
+        {
+            float cellSize = 25.0;
+
+            vec2 cell = floor(screenCoords / cellSize);
+            vec2 localPos = fract(screenCoords / cellSize);
+
+            // Random star position inside each cell.
+            vec2 starPos = vec2(
+                hash(cell),
+                hash(cell + vec2(17.0, 53.0))
+            );
+
+            // Distance from this pixel to the star.
+            float d = distance(localPos, starPos);
+
+            float size = 0.095;
+
+            float star =
+                1.0 - smoothstep(
+                    size,
+                    size + 0.015,
+                    d
+                );
+
+            // Only some cells actually contain stars.
+            float exists = step(
+                0.9,
+                hash(cell + vec2(91.0, 37.0))
+            );
+
+            star *= exists;
+
+            // Give each star a different twinkle phase.
+            float phase =
+                hash(cell + vec2(43.0, 19.0)) *
+                6.283185;
+
+            float twinkle =
+                0.75 +
+                sin(time * 2.0 + phase) * 0.25;
+
+            star *= twinkle;
+
+            vec3 background = vec3(0.015, 0.015, 0.05);
+            vec3 starColor = vec3(1.0);
+
+            vec3 result =
+                mix(background, starColor, star);
+
+            return vec4(result, 1.0);
         }
         ]])
 

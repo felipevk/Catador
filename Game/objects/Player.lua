@@ -48,8 +48,15 @@ function Player:new(area, x, y, opts)
 
     self.r = 0
     self.rotateSpeed = 0
+    self.attractEffects = {}
     if opts.modifiers.attract then
         self.rotateSpeed = 10
+        for i = 1, self.handCount do
+            local effect = self.area:addGameObject('GravFieldEffect', 0, 0, {
+                range = self.attractRange
+            })
+            table.insert(self.attractEffects, effect)
+        end
     end
 end
 
@@ -77,6 +84,8 @@ function Player:update(dt)
         handCol:setLinearVelocity(vx, vy)        
 
         if self.modifiers.attract then
+            self.attractEffects[i]:updatePos(handOffsetX, handOffsetY)
+
             local inRange = self.area.world:queryCircleArea(
                 handOffsetX,
                 handOffsetY,
@@ -273,23 +282,23 @@ function Player:draw()
     for i = 1, self.handCount do
         local spriteData = self.handData[i].sprite
 
-        if self.modifiers.attract then
-            local fieldColor = deepCopyColor(colors.purple)
-            local circleCount = 8
+        -- if self.modifiers.attract then
+        --     local fieldColor = deepCopyColor(colors.purple)
+        --     local circleCount = 8
 
-            for i = 0, circleCount do
-                local radius = self.attractRange * (1 - (i / circleCount))
-                fieldColor[4] = 0.2 + (i / circleCount) * 0.4
-                love.graphics.setColor(unpack(fieldColor))
-                love.graphics.circle(
-                    "fill",
-                    self.x + spriteData.position.x,
-                    self.y + spriteData.position.y,
-                    radius
-                )
-            end
-            love.graphics.setColor(1, 1, 1, 1)
-        end
+        --     for i = 0, circleCount do
+        --         local radius = self.attractRange * (1 - (i / circleCount))
+        --         fieldColor[4] = 0.2 + (i / circleCount) * 0.4
+        --         love.graphics.setColor(unpack(fieldColor))
+        --         love.graphics.circle(
+        --             "fill",
+        --             self.x + spriteData.position.x,
+        --             self.y + spriteData.position.y,
+        --             radius
+        --         )
+        --     end
+        --     love.graphics.setColor(1, 1, 1, 1)
+        -- end
         
         love.graphics.draw(
             spriteData.asset, 
@@ -323,6 +332,10 @@ function Player:destroy()
 
     for _, collider in ipairs(self.colliders) do
         collider:destroy()
+    end
+
+    for _, effect in ipairs(self.attractEffects) do
+        effect:die()
     end
 end
 

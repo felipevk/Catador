@@ -18,30 +18,32 @@ function Play:new()
     }
 
     self.spawnerData = {
-        bowler = {sprite = sprites.bowler, timeToSpawn = 2, spawnForces = { {1000, -500},{0, 1000} }, velocity = 100},
-        basket = {sprite = sprites.basket, timeToSpawn = 1.5, spawnForces = { {1000, -500},{0, 1000} }, velocity = 200},
-        tennis = {sprite = sprites.tennis, timeToSpawn = 0.8, spawnForces = { {1000, -500},{0, 1000} }, velocity = 150}
+        bowler = {sprite = sprites.bowler, timeToSpawn = 2, spawnForces = { {1000, -500},{0, 1000} }, velocity = 100, special = false},
+        basket = { sprite = sprites.basket, timeToSpawn = 1.5, spawnForces = { { 1000, -500 }, { 0, 1000 } }, velocity = 300, special = false },
+        tennis = { sprite = sprites.tennis, timeToSpawn = 0.5, spawnForces = { { 1000, -500 }, { 0, 1000 } }, velocity = 800, special = true },
+        golfer = { sprite = sprites.golfer, timeToSpawn = 0.8, spawnForces = { { 2000, -500 }, { 0, 2000 } }, velocity = 200, special = false },
+        lacross = { sprite = sprites.lacross, timeToSpawn = 0.4, spawnForces = { { 500, -500 }, { 0, 500 } }, velocity = 50, special = false }
     }
 
     self.levelData = {
         -- ATTACK
         { 
-            { goal = 3, time = 20, spawners = {'tennis'} }, 
-            { goal = 4, time = 20, spawners = {'bowler', 'basket'} }, 
-            { goal = 5, time = 15, spawners = {'bowler', 'tennis', 'basket'} }, 
-            { goal = 6, time = 15, spawners = {'basket', 'tennis', 'bowler'} }, 
-            { goal = 6, time = 13, spawners = {'basket', 'tennis', 'bowler', 'bowler'} }, 
-            { goal = 8, time = 13, spawners = {'bowler', 'tennis', 'basket', 'tennis', 'bowler', 'bowler'} }
+            { goal = 3, time = 20, spawners = {'bowler', 'golfer', 'bowler'} }, --ok
+            { goal = 4, time = 20, spawners = { 'bowler', 'basket', 'basket' } },--ok
+            { goal = 5, time = 15, spawners = { 'golfer', 'golfer' } },
+            { goal = 6, time = 15, spawners = { 'basket', 'basket', 'lacross' } },
+            { goal = 6, time = 13, spawners = { 'basket', 'lacross' } },
+            { goal = 8, time = 13, spawners = {'lacross'} }
         },
        
         -- DEFENSE
         { 
-            { goal = 4, time = 10, spawners = {'bowler', 'basket'} }, 
-            { goal = 4, time = 10, spawners = {'bowler', 'bowler', 'bowler'} }, 
-            { goal = 5, time = 8, spawners = {'tennis', 'basket', 'tennis'} }, 
-            { goal = 6, time = 5, spawners = {'tennis', 'tennis', 'tennis'} }, 
-            { goal = 6, time = 10, spawners = {'basket', 'tennis', 'basket'} } , 
-            { goal = 5, time = 15, spawners = {'basket', 'tennis', 'basket', 'basket', 'bowler'} } 
+            { goal = 4, time = 10, spawners = {'bowler', 'basket'} }, --ok
+            { goal = 4, time = 10, spawners = {'bowler', 'bowler', 'bowler', 'basket'} }, --ok
+            { goal = 5, time = 8,  spawners = { 'bowler', 'basket', 'basket' } },
+            { goal = 6, time = 5,  spawners = { 'golfer', 'bowler', 'lacross', 'lacross', 'golfer' } },
+            { goal = 6, time = 10, spawners = { 'basket', 'golfer', 'basket', 'lacross', 'lacross' } },
+            { goal = 5, time = 15, spawners = { 'basket', 'basket', 'golfer', 'basket', 'bowler', 'golfer' } }
         }
     }
 
@@ -82,6 +84,7 @@ function Play:new()
         setJumbo = function() self.modifiers.jumbo = true end,
         setMini = function() self.modifiers.mini = true end,
         setAttract = function() self.modifiers.attract = true end,
+        setTennis = function() self.modifiers.tennis = true end,
     }
 
     self.fxDescriptions = {
@@ -98,7 +101,8 @@ function Play:new()
         setSlowSelectSpeed = 'Better Life Choices',
         setJumbo = 'Big Stuff',
         setMini = 'Small Stuff',
-        setAttract = 'Gravitational Hands'
+        setAttract = 'Gravitational Hands',
+        setTennis = 'Play Tennis'
     }
 
     self.charmData = {
@@ -129,8 +133,8 @@ function Play:new()
         },
         {
             name = 'Graveyard', sprite = sprites.charm6, color = colors.green, 
-            descriptions = {self.fxDescriptions.setScoreMult2}, 
-            effects = {self.effects.setScoreMult2}
+            descriptions = { self.fxDescriptions.setScoreMult2, self.fxDescriptions.setTennis },
+            effects = { self.effects.setScoreMult2, self.effects.setTennis }
         },
         {
             name = 'Yeller', sprite = sprites.charm7, color = colors.yellow, 
@@ -259,32 +263,41 @@ function Play:newLevel()
     self.player = self.area:addGameObject('Player', 0, 0, {modifiers = self.modifiers, drop = self.drop, timeTracker = self.timeTracker})
     
     local spawnerDepth = 10
+
+    local addSpawner = function(spawnerKey, _)
+        local spawnerData = self.spawnerData[spawnerKey]
+        local pos = {}
+        if self.gameMode == GameModes.ATTACK then
+            pos = { 50, love.math.random(100, 600) }
+        else
+            pos = { love.math.random(200, 1400), 100 }
+        end
+
+        self.area:addGameObject('Spawner', pos[1], pos[2], {
+            gameMode = self.gameMode,
+            drop = self.drop,
+            collectableData = self.collectableData,
+            modifiers = self.modifiers,
+            sprite = spawnerData.sprite,
+            timeToSpawn = spawnerData.timeToSpawn,
+            spawnForces = spawnerData.spawnForces,
+            velocity = spawnerData.velocity,
+            depth = spawnerDepth,
+            special = spawnerData.special
+        })
+
+        spawnerDepth = spawnerDepth + 1
+    end
     
     M.each(current_level_data.spawners, 
         function(spawnerKey, _)
-            local spawnerData = self.spawnerData[spawnerKey]
-            local pos = {}
-            if self.gameMode == GameModes.ATTACK then
-                pos = {50, love.math.random(100, 600)}
-            else
-                pos = {love.math.random(200, 1400), 100}
-            end
-            
-            self.area:addGameObject('Spawner', pos[1], pos[2], {
-                gameMode = self.gameMode,
-                drop = self.drop,
-                collectableData = self.collectableData,
-                modifiers = self.modifiers,
-                sprite = spawnerData.sprite,
-                timeToSpawn = spawnerData.timeToSpawn,
-                spawnForces = spawnerData.spawnForces,
-                velocity = spawnerData.velocity,
-                depth = spawnerDepth
-            })
-
-            spawnerDepth = spawnerDepth + 1
+            addSpawner(spawnerKey)
         end
     )
+
+    if self.modifiers.tennis then
+        addSpawner('tennis')
+    end
 
     local activeCharmsData = {}
     for _, i in ipairs(self.activeCharms) do
