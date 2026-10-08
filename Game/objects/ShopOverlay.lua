@@ -171,7 +171,7 @@ function ShopOverlay:drawOption(rect, charmData, isSelected, font)
     draft:rectangle(rectCenter.x, rectCenter.y , rect.w, rect.h, 'fill')
 
     if isSelected then
-        love.graphics.setColor(unpack(self.optionOutlineColor))
+        love.graphics.setColor(unpack(charmData.color))
         love.graphics.setLineWidth(20)
         draft:rectangle(rectCenter.x, rectCenter.y , rect.w, rect.h, 'line')
         love.graphics.setLineWidth(1)

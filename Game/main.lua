@@ -260,8 +260,10 @@ function love.load()
     debugTools = DebugTools()
 end
 
-function getGameFont()
-    if love.math.random() > 0.9 then
+function getGameFont(ignoreAngelic)
+    ignoreAngelic = ignoreAngelic or false
+
+    if not ignoreAngelic and love.math.random() > 0.9 then
         return fonts.angelic
     end
 

@@ -26,7 +26,7 @@ function GameModeOverlay:new(area, x, y, opts)
     -- x,y as top left
     self.buttonData = {
         x = gw / 2 - 528 / 2,
-        y = 656,
+        y = 812,
         w = 528,
         h = 156,
         text = "CHOOSE",
@@ -41,7 +41,7 @@ function GameModeOverlay:new(area, x, y, opts)
 
     self.defendRect = {x = gw / 2, y = gh / 2 - self.h / 2, w = self.w, h = self.h }
 
-    self.timeToHide = 2.0
+    self.timeToHide = 1.5
 
     self.allowClick = false
 
@@ -59,9 +59,14 @@ function GameModeOverlay:show(movementSpeed, callback)
 
     self.dir = 1
 
-    self.buttonFont = getGameFont()
-    self.attackFont = getGameFont()
-    self.defendFont = getGameFont()
+    self.handR = 0
+
+    self.buttonFont = getGameFont(true)
+    self.attackFont = getGameFont(true)
+    self.defendFont = getGameFont(true)
+
+    self.attackDescFont = getGameFont(true)
+    self.defendDescFont = getGameFont(true)
 
     self.timer:after(0.5, function() self.allowClick = true end)
 end
@@ -109,15 +114,22 @@ end
 
 function GameModeOverlay:onClicked()
     self.isSelected = true
+    self.allowClick = false
 
-    self.timer:after(self.timeToHide, function() self:hide() end)
+    self.timer:tween(self.timeToHide, self, { handR = 10 * math.pi }, 'in-out-cubic',
+        function()
+            self:hide()
+        end)
 end
 
 
 function GameModeOverlay:hide()
     self.showing = false
-    local pickedMode = (self.x < gw / 2) and GameModes.ATTACK or GameModes.DEFENSE
-    self.onPicked(pickedMode)
+    self.onPicked(self:getSelectedMode())
+end
+
+function GameModeOverlay:getSelectedMode()
+    return (self.x < gw / 2) and GameModes.ATTACK or GameModes.DEFENSE
 end
 
 function GameModeOverlay:draw()
@@ -140,19 +152,34 @@ function GameModeOverlay:draw()
     draft:rectangle(gw / 2 - self.w / 2, gh / 2, self.w, self.h, 'fill')
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(self.attackFont)
-    printInsideRect('Score Points', self.attackFont, 'top', 50, self.attackRect)
-
+    printInsideRect('Attack', self.attackFont, 'top', 50, self.attackRect)
+    printInsideRect('Drag to goal', self.attackDescFont, 'bottom', 50, self.attackRect)
+    
     love.graphics.setColor(unpack(colors.blue))
     draft:rectangle(gw / 2 + self.w / 2, gh / 2, self.w, self.h, 'fill')
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(self.defendFont)
     printInsideRect('Defend', self.defendFont, 'top', 50, self.defendRect)
+    printInsideRect('Block the goal', self.defendDescFont, 'bottom', 50, self.defendRect)
+
+    if self.isSelected then
+        love.graphics.setColor(unpack(colors.green))
+        love.graphics.setLineWidth(20)
+        if self:getSelectedMode() == GameModes.ATTACK then
+            draft:rectangle(gw / 2 - self.w / 2, gh / 2, self.w, self.h, 'line')
+        else
+            draft:rectangle(gw / 2 + self.w / 2, gh / 2, self.w, self.h, 'line')
+        end
+        
+        love.graphics.setLineWidth(1)
+    end
 
     love.graphics.setColor(1, 1, 1, 1)
 
     if not self.isSelected then self:drawConfirmButton() end
 
-    love.graphics.draw(sprites.hand1, self.x, self.y, - math.pi * 0.5, 1, 1, sprites.hand1:getWidth() / 2, sprites.hand1:getHeight() / 2)
+    love.graphics.draw(sprites.hand1, self.x, self.y, (-math.pi * 0.5) + self.handR, 1, 1, sprites.hand1:getWidth() / 2,
+    sprites.hand1:getHeight() / 2)
 
 end
 
