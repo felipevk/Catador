@@ -7,12 +7,12 @@ sy = 1
 debug = false
 drawCol = false
 useShader = true
---forceCharm = 9
+--forceCharm = 4
 
 
 function love.conf(t)
 	t.identity = nil                   -- The name of the save directory (string)
-    t.version = "11.5"                 -- The LÖVE version this game was made for (string)
+    t.version = "11.4"                 -- The LÖVE version this game was made for (string)
     t.console = true                   -- Attach a console (boolean, Windows only)
 
 	t.window.title = "Game"            -- The window title (string)

@@ -73,7 +73,8 @@ function love.load()
         trophy = love.graphics.newImage("resources/sprites/trophy.png"),
         notch = love.graphics.newImage("resources/sprites/notch.png"),
         golfer = love.graphics.newImage("resources/sprites/golfer.png"),
-        lacross = love.graphics.newImage("resources/sprites/lacross.png")
+        lacross = love.graphics.newImage("resources/sprites/lacross.png"),
+        cardHold = love.graphics.newImage("resources/sprites/cardHold.png")
     }
 
     sounds = {
@@ -88,29 +89,42 @@ function love.load()
         phoneRing = love.audio.newSource("resources/audio/phoneRing1.mp3", "static")
     }
 
-    fonts = {
-        angelic = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", 40),
-        jogrunge = love.graphics.newFont("resources/fonts/JOGRUNGE.otf", 40),
-        friendlySans = love.graphics.newFont("resources/fonts/FriendlySans-Regular.ttf", 40),
-        pixelatedElegance = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", 40),
-        latinaPopular = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", 40),
-        anotherTypewritter = love.graphics.newFont("resources/fonts/atwriter.ttf", 40),
-        vinqueAntique = love.graphics.newFont("resources/fonts/vinque antique bd.otf", 40),
+    fontS = 24
+    fontDefault = 40
+    fontM = 80
+    fontL = 100
 
-        angelicM = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", 80),
-        jogrungeM = love.graphics.newFont("resources/fonts/JOGRUNGE.otf", 80),
-        friendlySansM = love.graphics.newFont("resources/fonts/FriendlySans-Regular.ttf", 80),
-        pixelatedEleganceM = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", 80),
-        latinaPopularM = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", 80),
-        anotherTypewritterM = love.graphics.newFont("resources/fonts/atwriter.ttf", 80),
+    fonts = {
+        angelicS = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", 28),
+        jogrungeS = love.graphics.newFont("resources/fonts/JOGRUNGE.otf", fontS),
+        friendlySansS = love.graphics.newFont("resources/fonts/FriendlySans-Regular.ttf", 30),
+        pixelatedEleganceS = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", 26),
+        latinaPopularS = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", 30),
+        anotherTypewritterS = love.graphics.newFont("resources/fonts/atwriter.ttf", 28),
+        vinqueAntiqueS = love.graphics.newFont("resources/fonts/vinque antique bd.otf", 30),
+
+        angelic = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", fontDefault),
+        jogrunge = love.graphics.newFont("resources/fonts/JOGRUNGE.otf", fontDefault),
+        friendlySans = love.graphics.newFont("resources/fonts/FriendlySans-Regular.ttf", fontDefault),
+        pixelatedElegance = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", fontDefault),
+        latinaPopular = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", fontDefault),
+        anotherTypewritter = love.graphics.newFont("resources/fonts/atwriter.ttf", fontDefault),
+        vinqueAntique = love.graphics.newFont("resources/fonts/vinque antique bd.otf", fontDefault),
+
+        angelicM = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", fontM),
+        jogrungeM = love.graphics.newFont("resources/fonts/JOGRUNGE.otf", fontM),
+        friendlySansM = love.graphics.newFont("resources/fonts/FriendlySans-Regular.ttf", fontM),
+        pixelatedEleganceM = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", fontM),
+        latinaPopularM = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", fontM),
+        anotherTypewritterM = love.graphics.newFont("resources/fonts/atwriter.ttf", fontM),
         vinqueAntiqueM = love.graphics.newFont("resources/fonts/vinque antique bd.otf", 230),
 
-        angelicL = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", 100),
-        jogrungeL = love.graphics.newFont("resources/fonts/JOGRUNGE.otf", 100),
-        friendlySansL = love.graphics.newFont("resources/fonts/FriendlySans-Regular.ttf", 100),
-        pixelatedEleganceL = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", 100),
-        latinaPopularL = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", 100),
-        anotherTypewritterL = love.graphics.newFont("resources/fonts/atwriter.ttf", 100),
+        angelicL = love.graphics.newFont("resources/fonts/Angelic-Regular.ttf", fontL),
+        jogrungeL = love.graphics.newFont("resources/fonts/JOGRUNGE.otf", fontL),
+        friendlySansL = love.graphics.newFont("resources/fonts/FriendlySans-Regular.ttf", fontL),
+        pixelatedEleganceL = love.graphics.newFont("resources/fonts/Pixelated Elegance.ttf", fontL),
+        latinaPopularL = love.graphics.newFont("resources/fonts/LatinaPopular-Regular.ttf", fontL),
+        anotherTypewritterL = love.graphics.newFont("resources/fonts/atwriter.ttf", fontL),
         vinqueAntiqueL = love.graphics.newFont("resources/fonts/vinque antique bd.otf", 250)
     }
 
@@ -258,6 +272,26 @@ function love.load()
     gotoRoom("Start")
 
     debugTools = DebugTools()
+end
+
+function getGameFontS(ignoreAngelic)
+    ignoreAngelic = ignoreAngelic or false
+
+    if not ignoreAngelic and love.math.random() > 0.9 then
+        return fonts.angelicS
+    end
+
+    local regularFonts = {
+        fonts.jogrungeS,
+        fonts.friendlySansS,
+        fonts.vinqueAntiqueS,
+        fonts.pixelatedEleganceS,
+        fonts.latinaPopularS,
+        fonts.anotherTypewritterS
+    }
+    local selected = regularFonts[love.math.random(#regularFonts)]
+
+    return selected
 end
 
 function getGameFont(ignoreAngelic)

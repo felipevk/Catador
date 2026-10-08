@@ -32,16 +32,16 @@ function ShopOverlay:new(area, x, y, opts)
 
     self.optionRect = {
         {
-            x = 380,
-            y = 176,
-            w = 546,
-            h = 624,
+            x = 500,
+            y = 155,
+            w = 333,
+            h = 602,
         },
         {
-            x = 994,
-            y = 176,
-            w = 546,
-            h = 624,
+            x = 1207,
+            y = 300,
+            w = 333,
+            h = 602,
         }
     }
 
@@ -66,7 +66,8 @@ function ShopOverlay:show(callback)
 
     self.buttonFont = getGameFont()
 
-    self.optionsFonts = {getGameFont(), getGameFont()}
+    self.titleFonts = { getGameFont(), getGameFont() }
+    self.optionsFonts = {getGameFontS(), getGameFontS()}
 
     sounds.main:setVolume(0.2)
     sounds.main:setPitch(0.95)
@@ -144,7 +145,14 @@ function ShopOverlay:draw()
     if self.selected ~= 0 then self:drawConfirmButton() end
 
     for i = 1, #self.optionRect do
-        self:drawOption(self.optionRect[i], self.shopCharms[i], self.selected == i, self.optionsFonts[i])
+        self:drawOption(
+        self.optionRect[i], 
+        self.shopCharms[i], 
+        self.selected == i, 
+        self.titleFonts[i],
+        self.optionsFonts[i], 
+        i
+    )
     end
 end
 
@@ -158,17 +166,31 @@ function ShopOverlay:drawConfirmButton()
 
     love.graphics.setColor(unpack(self.buttonData.textColor))
     
+    love.graphics.setFont(self.buttonFont)
     printInsideRect(self.buttonData.text, self.buttonFont, 'center', 0, buttonRect)
     
     love.graphics.setColor(1, 1, 1, 1)
 end
 
-function ShopOverlay:drawOption(rect, charmData, isSelected, font)
+function ShopOverlay:drawOption(rect, charmData, isSelected, titleFont, descFont, index)
     local rectCenter = getCenter(rect)
     local startPadding = 20
 
-    love.graphics.setColor({1.0,1.0,1.0,0.75})
-    draft:rectangle(rectCenter.x, rectCenter.y , rect.w, rect.h, 'fill')
+    local hScale = 1
+    if index == 2 then
+        hScale = -1
+    end
+
+    love.graphics.setColor({ 1.0, 1.0, 1.0, 1.0 })
+    love.graphics.draw(
+        sprites.cardHold,
+        rectCenter.x,
+        rectCenter.y,
+        0,
+        hScale, 1,
+        sprites.cardHold:getWidth() / 2 + 50,
+        sprites.cardHold:getHeight() / 2 - 22
+    )
 
     if isSelected then
         love.graphics.setColor(unpack(charmData.color))
@@ -178,10 +200,10 @@ function ShopOverlay:drawOption(rect, charmData, isSelected, font)
     end
 
     love.graphics.setColor({0.0,0.0,0.0,1.0})
-    local lineHeight = font:getHeight()
+    local lineHeight = titleFont:getHeight()
 
-    love.graphics.setFont(font)
-    printInsideRect(charmData.name, font, 'top', startPadding, rect)
+    love.graphics.setFont(titleFont)
+    printInsideRect(charmData.name, titleFont, 'top', startPadding, rect)
     
     love.graphics.setColor(unpack(charmData.color))
     local sprite = charmData.sprite
@@ -196,20 +218,20 @@ function ShopOverlay:drawOption(rect, charmData, isSelected, font)
         0
     )
 
-    love.graphics.setFont(font)
+    love.graphics.setFont(descFont)
     love.graphics.setColor({0.0,0.0,0.0,1.0})
 
-    local startTextY = rect.y + (sprite:getHeight() * spriteScale) + startPadding + 25
+    local startTextY = rect.y + (sprite:getHeight() * spriteScale) + startPadding + 45
     for i = 1 , #charmData.descriptions do
         local text = charmData.descriptions[i]
         local textRect = {
-            x = rectCenter.x - font:getWidth(text) / 2, 
+            x = rectCenter.x - descFont:getWidth(text) / 2,
             y = startTextY + i * (lineHeight + 5), 
-            w = font:getWidth(text), 
-            h = font:getHeight()
+            w = descFont:getWidth(text),
+            h = descFont:getHeight()
         }
         --text, font, side, offset, rect
-        printInsideRect(text, font, 'center', 0, textRect)
+        printInsideRect(text, descFont, 'center', 0, textRect)
     end
 end
 

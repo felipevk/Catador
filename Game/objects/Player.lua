@@ -83,94 +83,7 @@ function Player:update(dt)
 
         handCol:setLinearVelocity(vx, vy)        
 
-        if self.modifiers.attract then
-            self.attractEffects[i]:updatePos(handOffsetX, handOffsetY)
-
-            local inRange = self.area.world:queryCircleArea(
-                handOffsetX,
-                handOffsetY,
-                self.attractRange,
-                { "Collectable" }
-            )
-
-            for _, collider in ipairs(inRange) do
-                local vx, vy = collider:getLinearVelocity()
-                local colX, colY = collider:getPosition()
-
-                local speed = getVectorMagnitude(vx, vy)
-
-                local dx, dy = handOffsetX - colX, handOffsetY - colY
-                local length = getVectorMagnitude(dx, dy)
-
-                if length > 0 and speed > 0 then
-                    dx = dx / length
-                    dy = dy / length
-
-                    local desiredVx = dx * speed * self.attractForce
-                    local desiredVy = dy * speed * self.attractForce
-
-                    local steering = 2
-
-                    vx = vx + (desiredVx - vx) * steering * dt
-                    vy = vy + (desiredVy - vy) * steering * dt
-
-                    -- normalize again so steering doesn't accidentally change speed
-                    local newSpeed = getVectorMagnitude(vx, vy)
-
-                    if newSpeed > 0 then
-                        vx = vx / newSpeed * speed
-                        vy = vy / newSpeed * speed
-                    end
-
-                    collider:setLinearVelocity(vx, vy)
-                end
-            end
-        end
-
-        local w = self.handData[i].collider.w
-        local h = self.handData[i].collider.h
-
-        if not self.modifiers.sticky and not self.modifiers.split and not self.modifiers.increaseTimeWithCollision then goto continue end
-
-        local rect = {
-            x = handOffsetX - w / 2,
-            y = handOffsetY - h / 2,
-            w = w,
-            h = h
-        }
-        local hits = self.area.world:queryRectangleArea(
-            rect.x, 
-            rect.y, 
-            rect.w,
-            rect.h,
-            {'Collectable'}
-        )
-
-        local handCenter = getCenter(rect)
-
-        for _, collectableCol in ipairs(hits) do
-            local collectable = collectableCol:getObject()
-
-            if self.modifiers.increaseTimeWithCollision and not self.isAddTime and not collectable.consumed then
-                self.timeTracker:addTime(0.6)
-                self.area:addGameObject('AddTimeEffect', collectable.x, collectable.y, {
-                    duration = 1.0, speed = 300, h = 30, color = colors.red, min = 1, max = 2
-                })
-                self.isAddTime = true
-                self.timer:after(self.addTimeCooldown, function() self.isAddTime = false end)
-            end
-
-            if self.modifiers.split and not collectable.consumed and not collectable.split and not collectable.dead then
-                self:splitCollectable(collectableCol)
-                break
-            end
-
-            if self.modifiers.sticky and not collectable.consumed and not collectable.isAttached then
-                self:stickToCollectable(collectableCol, handCol, handCenter)
-            end
-        end
-
-        ::continue::
+        self:processHandCollisions(i, handOffsetX, handOffsetY, dt)
     end
 
     for i = #self.joints, 1, -1 do
@@ -180,6 +93,97 @@ function Player:update(dt)
         end
     end
 end 
+
+function Player:processHandCollisions(index, handOffsetX, handOffsetY, dt)
+    local handCol = self.colliders[index]
+
+    if self.modifiers.attract then
+        self.attractEffects[index]:updatePos(handOffsetX, handOffsetY)
+
+        local inRange = self.area.world:queryCircleArea(
+            handOffsetX,
+            handOffsetY,
+            self.attractRange,
+            { "Collectable" }
+        )
+
+        for _, collider in ipairs(inRange) do
+            local vx, vy = collider:getLinearVelocity()
+            local colX, colY = collider:getPosition()
+
+            local speed = getVectorMagnitude(vx, vy)
+
+            local dx, dy = handOffsetX - colX, handOffsetY - colY
+            local length = getVectorMagnitude(dx, dy)
+
+            if length > 0 and speed > 0 then
+                dx = dx / length
+                dy = dy / length
+
+                local desiredVx = dx * speed * self.attractForce
+                local desiredVy = dy * speed * self.attractForce
+
+                local steering = 2
+
+                vx = vx + (desiredVx - vx) * steering * dt
+                vy = vy + (desiredVy - vy) * steering * dt
+
+                -- normalize again so steering doesn't accidentally change speed
+                local newSpeed = getVectorMagnitude(vx, vy)
+
+                if newSpeed > 0 then
+                    vx = vx / newSpeed * speed
+                    vy = vy / newSpeed * speed
+                end
+
+                collider:setLinearVelocity(vx, vy)
+            end
+        end
+    end
+
+    local w = self.handData[index].collider.w
+    local h = self.handData[index].collider.h
+
+    if not self.modifiers.sticky and not self.modifiers.split and not self.modifiers.increaseTimeWithCollision then return end
+
+    local rect = {
+        x = handOffsetX - w / 2,
+        y = handOffsetY - h / 2,
+        w = w,
+        h = h
+    }
+    local hits = self.area.world:queryRectangleArea(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h,
+        { 'Collectable' }
+    )
+
+    local handCenter = getCenter(rect)
+
+    for _, collectableCol in ipairs(hits) do
+        local collectable = collectableCol:getObject()
+
+        if self.modifiers.increaseTimeWithCollision and not self.isAddTime and not collectable.consumed then
+            self.timeTracker:addTime(0.6)
+            self.area:addGameObject('AddTimeEffect', collectable.x, collectable.y, {
+                duration = 1.0, speed = 300, h = 30, color = colors.red, min = 1, max = 2
+            })
+            self.isAddTime = true
+            self.timer:after(self.addTimeCooldown, function() self.isAddTime = false end)
+        end
+
+        if self.modifiers.split and not collectable.consumed and not collectable.split and not collectable.dead then
+            self:splitCollectable(collectableCol)
+            break
+        end
+
+        if self.modifiers.sticky and not collectable.consumed and not collectable.isAttached then
+            self:stickToCollectable(collectableCol, handCol, handCenter)
+        end
+    end
+end
 
 function Player:stickToCollectable(collectableCol, handCol, handCenter)
     sounds.stick:play()

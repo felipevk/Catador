@@ -68,7 +68,7 @@ function GameModeOverlay:show(movementSpeed, callback)
     self.attackDescFont = getGameFont(true)
     self.defendDescFont = getGameFont(true)
 
-    self.timer:after(0.5, function() self.allowClick = true end)
+    self.timer:after(0.2, function() self.allowClick = true end)
 end
 
 function GameModeOverlay:update(dt)
